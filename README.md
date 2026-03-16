@@ -19,6 +19,10 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-03-16-11-27-58
+- Zipped and Removed Modules Tickets and TicketsMessages that were generated with Khan to begin work on Khan AI.
+- Updated xan.php function modulesUpdate to set the Modules RelatedTables column.
+
 2026-03-15-15-36-27
 - Updated ProjectsTasks cardPortal Card Width.
 - Disabled Settings cardRecordOther NumPurchaseNext for now.
