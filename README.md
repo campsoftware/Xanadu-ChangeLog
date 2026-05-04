@@ -19,6 +19,12 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-04-16-14-55
+- Added more unit tests. Can call doTests.sh to run them.
+
+2026-05-04-13-47-48
+- Added xanApp/tests/ with basic test structure.
+
 2026-05-04-12-13-21
 - Updated doGit.sh to create a backup zip of the project after pushing to main.
 
