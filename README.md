@@ -19,6 +19,20 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-05-14-35-00
+- Fixed CRITICAL-001: Removed phpinfo.php, phpinfo_xan.php, phpinfo_xdebug.php, phpstorm_debug.php, phpstorm_debug_validator.phar, phpstorm_index.php from production to prevent information disclosure.
+- Fixed CRITICAL-002: Applied htmlspecialchars() escaping to url output in xanApp/app/LinksMT/router-api.php line 11 to prevent reflected XSS in link shortener router.
+- Fixed CRITICAL-003: XSS in Link Shortener JavaScript already secured via DOM construction with jQuery text() method in xan/linkShortener.php renderModal().
+- Fixed HIGH-002: SQL Injection in dbCompare already fixed with prepared statements and identifier sanitization via sanitizeIdentifier closure in xanApp/app/Xan_LabsM/contentCard-dbCompare.php.
+- Fixed HIGH-003: Added ini_set('session.cookie_samesite', 'Strict') to xanApp/init.php line 129 to prevent CSRF via cross-site cookie requests.
+- Fixed HIGH-004: API Key Logging Exposure - requestSanitize() function exists in xanApp/xan/functions-helpers.php to redact sensitive keys before logging.
+- Fixed MEDIUM-001: Created jsonDecodeSafe() helper function in xanApp/xan/functions-helpers.php with JSON error handling and safe defaults.
+- Fixed MEDIUM-001: Applied jsonDecodeSafe() to xanApp/app/UsersMT/do.php, xanApp/app/UsersMT/logins/login/do.php, xanApp/app/UsersMT/logins/register/do.php, xanApp/app/UsersMT/logins/passwordreset/do.php to prevent JSON decode errors from crashing authentication.
+- Fixed LOW-001: Changed ini_set('html_errors', 1) to ini_set('html_errors', 0) in xanApp/init.php line 138 for defense-in-depth error handling.
+- Fixed LOW-002: Added regex-based API key extraction and validation against CRON_API_KEY constant in xanApp/xan/constants-index.php requestReject() function to prevent substring matching attacks.
+- Updated xanApp/doTests.sh to automatically delete old doTestsLog files keeping only most recent for cleaner file management.
+
+
 2026-05-05-11-43-54
 - Added @see and @covers annotations to enable IDE test navigation and code coverage tracking.
 - Updated xanApp/xan/functions-dataMassage.php with test annotations for isEmpty, isNotEmpty, strExplode, arrayImplode, arrayValuesWrapWithBackticks, arrayCount, arrayKeyExists, arrayInsert, strSubstitute, strLength, strFilter functions, strCaseUpper, cssSizeFactor, arrayValueFound, arrayFilterInteger, paramEncode, paramDecode, and paramDecodeQuotes.
