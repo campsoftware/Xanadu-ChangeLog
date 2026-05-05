@@ -19,6 +19,18 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-05-11-43-54
+- Added @see and @covers annotations to enable IDE test navigation and code coverage tracking.
+- Updated xanApp/xan/functions-dataMassage.php with test annotations for isEmpty, isNotEmpty, strExplode, arrayImplode, arrayValuesWrapWithBackticks, arrayCount, arrayKeyExists, arrayInsert, strSubstitute, strLength, strFilter functions, strCaseUpper, cssSizeFactor, arrayValueFound, arrayFilterInteger, paramEncode, paramDecode, and paramDecodeQuotes.
+- Updated xanApp/xan/functions-files-paths.php with test annotations for pathExists, pathGetFileNameFull, pathGetFileNameNoExtension, pathGetExtension, pathGetPath, and fileMimeTypeFromFileName.
+- Updated xanApp/xan/inflector.php with test annotations for pluralize, singularize, camelize, underscore, dasherize, humanize, delimit, tableize, classify, and variable methods.
+- Updated xanApp/xan/constants-index.php with test annotation for requestReject function.
+- Updated xanApp/tests/Unit/Xan/FunctionsDataMassageTest.php with adjusted test configuration.
+- Updated xanApp/tests/phpunit.xml for PHPUnit coverage settings.
+- Updated xanApp/xan/constants-arrays.php with related adjustments.
+- Added doTestsLog files for test run history tracking.
+- Updated doTests.sh with test runner improvements.
+
 2026-05-04-16-14-55
 - Added more unit tests. Can call doTests.sh to run them.
 
