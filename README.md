@@ -19,6 +19,22 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-06-13-28-37
+- Moved tests/ directory from xanApp/tests/ to project root for security (outside web public root).
+- Relocated Playwright config and node_modules to tests/ directory with isolated package.json.
+- Updated .gitignore with tests/node_modules/, tests/test-results/, tests/playwright-report/, tests/playwright/.cache/ exclusions.
+- Added Playwright E2E tests: tests/e2e/contacts-print.spec.js with login and PDF generation flows.
+- Added Playwright documentation: tests/docs/PLAYWRIGHT_TESTING.md with setup and troubleshooting guide.
+- Fixed isEmpty() in xanApp/xan/functions-dataMassage.php to properly return true for empty arrays.
+- Reformatted xanApp/xan/xan.js.js with consistent code style (double quotes, arrow functions, spacing).
+- Changed session.cookie_samesite from 'Strict' to 'Lax' in xanApp/init.php for OAuth compatibility.
+- Removed package.xml (Xdebug PECL metadata - not part of project).
+- Removed old test-results/ from project root.
+- Updated doTests.sh to run from tests/ directory and generate comprehensive markdown logs.
+- Updated doGit.sh to manage timestamped commit message files with 3-file retention policy.
+- Created timestamped commit message files: doGitCommitMessage-2026-05-05-14-42-30.txt and doGitCommitMessage-2026-05-05-15-21-00.txt.
+- Renamed doTestsLog files with new timestamps for test run history tracking.
+
 2026-05-05-14-35-00
 - Fixed CRITICAL-001: Removed phpinfo.php, phpinfo_xan.php, phpinfo_xdebug.php, phpstorm_debug.php, phpstorm_debug_validator.phar, phpstorm_index.php from production to prevent information disclosure.
 - Fixed CRITICAL-002: Applied htmlspecialchars() escaping to url output in xanApp/app/LinksMT/router-api.php line 11 to prevent reflected XSS in link shortener router.
@@ -31,7 +47,6 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 - Fixed LOW-001: Changed ini_set('html_errors', 1) to ini_set('html_errors', 0) in xanApp/init.php line 138 for defense-in-depth error handling.
 - Fixed LOW-002: Added regex-based API key extraction and validation against CRON_API_KEY constant in xanApp/xan/constants-index.php requestReject() function to prevent substring matching attacks.
 - Updated xanApp/doTests.sh to automatically delete old doTestsLog files keeping only most recent for cleaner file management.
-
 
 2026-05-05-11-43-54
 - Added @see and @covers annotations to enable IDE test navigation and code coverage tracking.
