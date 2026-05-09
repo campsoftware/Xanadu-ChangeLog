@@ -19,6 +19,13 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-09-14-44-37
+- Fixed HIGH-002: File Operations Without Caching on Every Request
+- Added RouterFileExists to modulesD in xan.php modulesLoad() to pre-check router file existence once during module loading
+- Updated router.php to use \xan\xan::$modulesD[ $component1Base ][ 'RouterFileExists' ] for zero disk hits on every request
+- Removed unused fileExistsCacheD property and fileExistsCached method from xan.php
+- All 76 tests passing (74 PHPUnit + 2 E2E)
+
 2026-05-09-14-18-12
 - Fixed JS minification escaping: Added str_replace() in init.php to escape double quotes in PHP constant values before minification, preventing syntax errors in minified xan.js.
 - Fixed duplicate source.onmessage: Removed duplicate EventSource listener in xan.js.js xanDoProgressContinue function.
