@@ -19,6 +19,20 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-09-15-17-47
+- Fixed MEDIUM-002: String Concatenation in Loops in mysqlTools.php
+- Rewrote tablesBackup() function to use streaming file writes instead of accumulating $sql string
+- Open file handle once at start, write directly for constant memory usage regardless of table size
+- Replace inner-loop $sql .= concatenation with array-based value collection + implode per batch
+- Key changes:
+    * fwrite($fp, ...) instead of $sql .= ... + fileAppend()
+    * $values[] = ... then implode(',', $values) per row
+    * $rowLines[] = ... then write batch with proper terminators
+    * fclose($fp) on success or exception
+- Maintains: table filtering, batching, gzip support, error handling, all existing functionality
+- Eliminates O(n²) string reallocations that degraded performance under memory pressure
+- All 76 tests passing (74 PHPUnit + 2 E2E)
+
 2026-05-09-15-00-52
 - Fixed Synchronous Logging to Database on Every Request
 - Changed router.php to use logEventToFile instead of logEventToSQL for zero DB latency on requests
