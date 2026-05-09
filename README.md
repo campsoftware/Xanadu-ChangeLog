@@ -19,6 +19,22 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-09-14-18-12
+- Fixed JS minification escaping: Added str_replace() in init.php to escape double quotes in PHP constant values before minification, preventing syntax errors in minified xan.js.
+- Fixed duplicate source.onmessage: Removed duplicate EventSource listener in xan.js.js xanDoProgressContinue function.
+- Fixed HIGH-001 N+1 Query: Replaced SELECT-check-loop with INSERT-first collision retry (50 attempts) in linkShortener.php.
+- Fixed PHP 8.4 deprecation: Changed implicit nullable params to explicit nullable (?array) in requestSanitize() function.
+- Fixed functions-helpers.php: Replaced undefined isEqual() and strContains() with native PHP equivalents (===, str_contains).
+- Renamed doGit.sh to doCommit.sh for clarity; updated to manage timestamped commit message files.
+- Moved doTestsLog files and doCommitMessage files to new timestamps for history tracking.
+
+2026-05-06-15-09-43
+- Updated README.md with project documentation changes.
+- Moved PWA test files from xanApp/pwa/ to xanApp/tools/pwa/ for better organization.
+- Moved siteAddRedirect.php from xanApp/ to xanApp/tools/ to consolidate utility scripts.
+- Created doGitCommitMessage-2026-05-06-13-31-32.txt with previous commit messages for archival.
+- Updated doGitCommitMessage-next.txt with current pending changes.
+
 2026-05-06-13-28-37
 - Moved tests/ directory from xanApp/tests/ to project root for security (outside web public root).
 - Relocated Playwright config and node_modules to tests/ directory with isolated package.json.
