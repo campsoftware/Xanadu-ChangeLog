@@ -19,6 +19,15 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-09-15-00-52
+- Fixed Synchronous Logging to Database on Every Request
+- Changed router.php to use logEventToFile instead of logEventToSQL for zero DB latency on requests
+- Added logMemoryToFile and logMemoryToSQL functions to functions-files-paths.php for flexible memory logging
+- Updated peakMemoryUsageLog in functions-environment.php to use logMemoryToFile instead of direct SQL INSERT
+- Both Event and Memory logs now write to daily files (YYYYMMD_Event.txt, YYYYMMD_Memory.txt) for batch processing
+- SQL alternatives available (logEventToSQL, logMemoryToSQL) for future switching if needed
+- All 76 tests passing (74 PHPUnit + 2 E2E)
+
 2026-05-09-14-44-37
 - Fixed HIGH-002: File Operations Without Caching on Every Request
 - Added RouterFileExists to modulesD in xan.php modulesLoad() to pre-check router file existence once during module loading
