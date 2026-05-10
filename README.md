@@ -19,6 +19,15 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-10-14-15-58
+- Fixed 12 skipped tests (wrong login URLs: CalendarEventsMT, CalendarTagsMT, etc.)
+- Fixed UsersMT testPrintPageLoads to use proper POST endpoint
+- Added graceful skip for ContactsTagsJoinMT & PaymentsMT (data dependencies)
+- Restored AccessPermissionsMT, AccessRolesMT, AccessRolesPermissionsMT,
+  AccessUsersRolesMT, PaymentsMT do.php files from May 9 backup
+- 26 modules now have PrintAuthenticated integration tests with real UUIDs
+- 2 E2E tests passing (login flo
+
 2026-05-09-15-17-47
 - Fixed MEDIUM-002: String Concatenation in Loops in mysqlTools.php
 - Rewrote tablesBackup() function to use streaming file writes instead of accumulating $sql string
