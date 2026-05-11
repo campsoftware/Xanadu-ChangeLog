@@ -19,6 +19,24 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-11-13-25-00
+- Add MysqlToolsTest.php with 6 tests for mysqlTools class
+- Update tests/bootstrap.php to load mysqlTools.php class
+- Add @see annotations to tablesBackup() method (MEDIUM-002 streaming fix verified)
+- Verify MEDIUM-002 fix: fwrite, fopen, batchSize, numBatches, foreign_key_checks handling
+- All tests passing: 132 total, 129 passing (3 incomplete/skipped), 2 E2E passing
+
+2026-05-11-13-10-00
+- Add @see annotations to logMemoryToFile() and logMemoryToSQL() in functions-files-paths.php
+- Update tests/bootstrap.php to include functions-internet.php (ipOfBrowser dependency)
+- All tests passing: 126 total, 123 passing, 2 skipped, 2 E2E passing
+
+2026-05-11-12-40-00
+- Add @see annotations to tested functions in functions-environment.php
+- Add @see annotations to stringBytesFormattedToNum() in functions-dataMassage.php
+- Link tested functions to FunctionsEnvironmentTest methods for traceability
+- Tests: 126 total, 123 passing (11 environment tests, 2 E2E)
+
 2026-05-11-12-25-00
 - Fix stringBytesFormattedToNum() to handle unlimited memory (-1 → PHP_INT_MAX)
 - Add FunctionsEnvironmentTest.php with 11 unit tests for environment/system monitoring
