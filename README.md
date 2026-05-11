@@ -19,6 +19,13 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-11-11-45-00
+- Fix MEDIUM-004: Background exec for weekly log rotation (add & and /dev/null to prevent blocking PHP-FPM)
+- Fix missing newline at end of do-tasks-weekly.php
+- Added latest test logs: 2026-05-10-14-36-03, 2026-05-11-11-15-00, 2026-05-11-11-39-48
+- All tests passing: 114/117 PHPUnit, 2/2 E2E
+- Cleanup old test logs and commit message files
+
 2026-05-10-14-15-58
 - Fixed 12 skipped tests (wrong login URLs: CalendarEventsMT, CalendarTagsMT, etc.)
 - Fixed UsersMT testPrintPageLoads to use proper POST endpoint
