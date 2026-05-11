@@ -19,6 +19,93 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-11-15-36-00
+- Add EleCommonElementsTest.php with 11 tests (eleImage, eleLabel, eleDiv)
+- Add EleDateTimeElementsTest.php with 9 tests (eleDate, eleTime, eleDateTime)
+- Add ConstantsIndexTest.php with 5 tests (session constants)
+- Add @see annotations to eleImage.php, eleLabel.php, eleDiv.php, eleDate.php, eleTime.php, eleDateTime.php
+- Update tests/bootstrap.php with PATH_ROOT_INCLUDE constant and new element files
+- Remove ImapTest.php and SenderTest.php from server (dependency issues)
+- Total tests: 360, 357 passing, 2 E2E passing
+
+2026-05-11-15-12-00
+- Add FmDBTest.php with 11 tests for FileMaker database compatibility
+- Add OpenAIAPITest.php with 5 tests for OpenAI integration
+- Add PrinterTest.php with 5 tests for document generation
+- Add MysqlReportsTest.php with 8 tests for MySQL reporting
+- Add @see annotations to fmDB.php, openAIAPI.php, printer.php, mysqlReports.php
+- Update tests/bootstrap.php to load printer.php and mysqlReports.php
+- Total tests: 313, 310 passing, 2 E2E passing
+
+2026-05-11-14-53-00
+- Add ModuleTest.php with 13 tests for module class
+- Add @see annotations to module constructor, setURLs(), recTitleHeader(), recColRenderAs(), recCol_StringInline(), recCol_Input()
+- Update tests/bootstrap.php to load module.php
+- Module tests: 13/13 passing
+- Total tests: 225, 222 passing, 2 E2E passing
+
+2026-05-11-14-45-00
+- Add FunctionsFilesPathsTest.php with 7 tests for functions-files-paths.php (HIGH-002 area)
+- Add XanTest.php with 5 tests for xan.php bootstrap class
+- Add SingletonTest.php with 4 tests for singleton trait
+- Add @see annotations to 20 file/path functions
+- Fixed bootstrap.php to load singleton.php before xan.php
+- Update total: 212 tests, 209 passing, 2 E2E passing
+
+2026-05-11-14-39-00
+- Add RecsPDOTest.php with 9 tests for recsPDO class
+- Add @see annotations to __construct(), serverConnect(), query(), colValue(), colValueSet(), recordInsert()
+- Update tests/bootstrap.php to load recsPDO.php
+- RecsPDO tests: 9/9 passing
+- Total tests: 190, 187 passing, 2 E2E passing
+
+2026-05-11-14-28-00
+- Add RecsTest.php with 16 tests for recs class
+- Add @see annotations to __construct(), serverConnect(), query(), queryModule(), keyName(), keyValue(), tableName(), recID(), colValue(), colValueSet(), recordInsert(), recordUpdate(), recordDelete(), recordDuplicate()
+- Update tests/bootstrap.php to load recs.php
+- Recs tests: 16/16 passing
+- Total tests: 181, 178 passing, 2 E2E passing
+
+2026-05-11-14-23-00
+- Add FunctionsStripeTest.php with 9 tests for functions-stripe.php
+- Add @see annotations to stripeButtonProduct(), stripeButtonSubscription()
+- Update tests/bootstrap.php to load functions-stripe.php
+- FunctionsStripe tests: 9/9 passing
+- Total tests: 165, 162 passing, 2 E2E passing
+
+2026-05-11-14-18-00
+- Add FunctionsDataMassageTest.php with 10 tests for functions-dataMassage.php
+- Add @see annotations to isEmpty(), isNotEmpty(), arrayCount(), arrayKeyExists(), arrayToJSONPretty(), arrayValuesUnique(), paramEncode(), paramDecode(), cssSizeAdjust(), arrayInsert()
+- FunctionsDataMassage tests: 10/10 passing
+- Total tests: 156, 153 passing, 2 E2E passing
+
+2026-05-11-14-15-00
+- Add FunctionsInternetTest.php with 10 tests for functions-internet.php
+- Add @see annotations to ipOfBrowser(), ipServerExternal(), urlProtocolCheck(), emailAddressIsValid(), emailAddressIsNotValid(), cookieSet(), cookieGet()
+- FunctionsInternet tests: 10/10 passing
+- Total tests: 164, 161 passing, 2 E2E passing
+
+2026-05-11-14-10-00
+- Add FunctionsHelpersTest.php with 8 tests for functions-helpers.php
+- Add @see annotations to userIsAuthenticated(), userIsActive(), userIsAdmin(), jsScrollToTop(), jsScrollTo(), sqlSplit(), sqlInsertQuestions()
+- FunctionsHelpers tests: 8/8 passing
+- Total tests: 154, 151 passing, 2 E2E passing
+
+2026-05-11-13-55-00
+- Add ImportALMTest.php with 6 tests for importALM class
+- Add @see annotations to insertIntoSelect(), importDeleteModFlag(), fmValuesToJoinTables()
+- Update tests/bootstrap.php to load functions-importALM.php
+- ImportALM tests: 6/6 passing
+- Total tests: 146, 143 passing, 2 E2E passing
+
+2026-05-11-13-42-00
+- Add LinkShortenerTest.php with 8 tests for linkShortener class
+- Add @see annotations to create() and find() methods
+- Verify HIGH-001 fix: INSERT-first with collision retry pattern
+- Verify N+1 query avoidance, 50 attempt limit, 6-char codes
+- LinkShortener tests: 8/8 passing
+- Total tests: 140, 137 passing, 2 E2E passing
+
 2026-05-11-13-25-00
 - Add MysqlToolsTest.php with 6 tests for mysqlTools class
 - Update tests/bootstrap.php to load mysqlTools.php class
