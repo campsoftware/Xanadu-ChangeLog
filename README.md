@@ -19,6 +19,12 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-11-12-25-00
+- Fix stringBytesFormattedToNum() to handle unlimited memory (-1 → PHP_INT_MAX)
+- Add FunctionsEnvironmentTest.php with 11 unit tests for environment/system monitoring
+- Update tests/bootstrap.php to include required function dependencies
+- All tests passing: 123/126 PHPUnit (11 new tests added), 2/2 E2E
+
 2026-05-11-11-45-00
 - Fix MEDIUM-004: Background exec for weekly log rotation (add & and /dev/null to prevent blocking PHP-FPM)
 - Fix missing newline at end of do-tasks-weekly.php
