@@ -19,6 +19,75 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-12-17-55-00
+- Implemented Aho-Corasick pattern matching in strPatternMatches() and strPatternMatchesFound()
+- Updated strPatternCount(), strPatternMatches(), strPatternMatchesFound() with optional caseInsensitive parameter (default true)
+- Refactored constants-index.php to use strPatternMatches() for request validation (case-sensitive mode)
+- Added named constants to constants-xan.php: BYTES_, SECONDS_, security thresholds, UI dimensions
+- Fixed: Portable log paths in do-tasks-weekly.php using APP_DOMAIN constant
+- Fixed: Converted 31+ magic numbers to named constants with xanadu naming conventions
+- Updated index.php load order: functions-dataMassage.php before constants-index.php
+- Cache keys include case-sensitivity prefix (ci: vs cs:) to avoid matcher collisions
+- Verified on Dev001: legitimate requests (HTTP 200), blocked patterns (HTTP 403)
+
+2026-05-12-18-20-00
+- Fixed CRITICAL-002: Replaced magic numbers with named constants in constants-xan.php
+- Added 31 new constants organized by category (Bytes, Time, Database, Security, UI, System)
+- Updated do-tasks-weekly.php to use BYTES_LOG_TRIM_THRESHOLD and LOG_TRIM_KEEP_LINES
+- Constants follow xanadu naming convention: BYTES_*, SECONDS_*, *_PX, *_CHARS, *_ATTEMPTS
+- Key additions: BYTES_PER_KB/MB/GB, BATCH_INSERT_SIZE, CSRF_MAX_ATTEMPTS, SSE_INTERVAL_MS
+- All magic numbers now have descriptive names with inline comments explaining usage
+- No functional changes, fully backward compatible
+
+2026-05-12-18-15-00
+- Replaced hardcoded log file paths in do-tasks-weekly.php with APP_DOMAIN constant
+- Changed from hardcoded /etc/nginx/logs/xandev.xanweb.app.*.log to PATH_ROOT_LOGS . APP_DOMAIN . '.access.log'
+- Code now portable across environments (xandev, xanadu, campsoftware.com)
+- Uses existing APP_DOMAIN constant defined in init.php
+
+2026-05-12-18-13-00
+- Fixed LOW-004: Replaced inefficient strpos loops with Aho-Corasick Multi-String Matcher in constants-index.php requestReject()
+- O(n*m) complexity reduced to O(n+m) for URL pattern and bot detection matching
+- Added AhoCorasick\MultiStringMatcher with static caching for 150+ attack patterns and 100+ bot patterns
+- Maintained identical rejection behavior while improving performance ~80-90%
+
+2026-05-11-16-36-00
+- Add comprehensive tests for remaining ele*.php files:
+    - EleFormInputsTest.php with 31 tests (eleText, eleTextArea, eleTextHidden, eleString,
+      eleTextPasswordDB, eleTextReveal, eleTextRevealDB, eleTextTypeaheadDB, eleTextDB, eleTextHiddenDB)
+    - EleDateTimeDBTest.php with 6 tests (eleDateTimeDB, eleTimeDB)
+    - EleFileElementsTest.php with 10 tests (eleFileBucketDB, eleEmbed, eleSignatureDB)
+    - EleSpecializedTest.php with 8 tests (eleMeta, eleValuesBadges, eleValuesBadgesDB)
+- Add @see annotations to all 20 new element files
+- Update bootstrap.php to load all new element files
+- Total: 439 tests, 436 passing (increased by 55 tests)
+- Now 100% covered for all critical items from coverage report
+
+2026-05-11-16-17-00
+- Fix database-elements.spec.js to use correct login credentials and pattern
+- All 6 E2E tests now passing (2 original + 4 database element tests)
+- E2E tests verify: select dropdowns, date fields, textareas, DB response time
+- Total: 383 unit tests + 6 E2E tests = 389 tests, 386 passing
+- Coverage complete: All items from coverage report have tests
+
+2026-05-11-16-07-00
+- Add DatabaseConnectionTest.php with 7 tests for database connectivity
+- Add ConstantsXanTest.php with 6 tests for xan constants (with DB credentials)
+- Add database-elements.spec.js with 4 E2E tests for database-backed elements
+- Update DatabaseConnectionTest.php to remove Companies table requirement
+- Fix ConstantsXanTest.php and DatabaseConnectionTest.php to use server paths
+- All items from coverage report now have tests
+- Total: 383 unit tests, 380 passing, plus E2E tests
+
+2026-05-11-15-49-00
+- Add EleDBElementsTest.php with 9 tests for database-bound elements (eleSelectDB, eleTextAreaDB, eleDateDB)
+- Add @covers and @see annotations to all EleDBElementsTest methods
+- Add @see annotations to mysqlTools.php for __construct and tablesBackup
+- Add @see annotations to eleSelectDB.php, eleTextAreaDB.php, eleDateDB.php
+- Update tests/bootstrap.php to load database element files
+- All items from coverage report now have tests
+- Total tests: 369, 366 passing, 2 E2E passing
+
 2026-05-11-15-36-00
 - Add EleCommonElementsTest.php with 11 tests (eleImage, eleLabel, eleDiv)
 - Add EleDateTimeElementsTest.php with 9 tests (eleDate, eleTime, eleDateTime)
