@@ -19,6 +19,19 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-13-16-35-00
+- Added error logging to router.php module loading paths
+- Enhanced debugging for unregistered modules and missing router files
+- No behavior change; existing 404 handling preserved
+
+2026-05-12-18-05-00
+- Refactored CSRF exemption logic from router.php to csrf.php
+- Added csrf_is_exempt_route() function to centralize exempt route definitions
+- Added csrf_requires_api_key() function for cron endpoint validation
+- Removed inline array and loop from router.php (8 lines)
+- Updated router.php to use new CSRF framework functions
+- Verified on Dev001: login works, bot detection active
+
 2026-05-12-17-55-00
 - Implemented Aho-Corasick pattern matching in strPatternMatches() and strPatternMatchesFound()
 - Updated strPatternCount(), strPatternMatches(), strPatternMatchesFound() with optional caseInsensitive parameter (default true)
