@@ -19,6 +19,13 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-17-20-20-00
+- Move session constants from aloe/request.php to index.php
+- Remove session constants from xan/constants-index.php (now just a stub)
+- Keep requestReject(), requestMatcherLoad(), requestMatcherSearch() in aloe/request.php
+- Session constants now defined in index.php with guards to prevent redefinition
+- Sync Dev001: verified login 28KB, tests 459/0 failures
+
 2026-05-17-20-15-00
 - Move requestReject(), requestMatcherLoad(), requestMatcherSearch() from xan/constants-index.php to aloe/request.php
 - Change namespace from xan to aloe for requestReject and helper functions
