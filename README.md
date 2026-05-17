@@ -19,6 +19,50 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-17-20-15-00
+- Move requestReject(), requestMatcherLoad(), requestMatcherSearch() from xan/constants-index.php to aloe/request.php
+- Change namespace from xan to aloe for requestReject and helper functions
+- Remove session constants from index.php (now in aloe/request.php)
+- Remove require_once('xan/constants-index.php') from index.php
+- Update requestReject call in index.php: \xan\requestReject() -> \aloe\requestReject()
+- Make xan/constants-index.php backward compatibility stub with session constants
+- Session constants now in aloe/request.php (with guards to prevent redefinition)
+- Sync Dev001: verified login 28KB, tests 459/0 failures
+
+2026-05-17-19-55-00
+- Update constants-index.php: remove dependency on functions-dataMassage.php
+- Add ahoCorasickLoad() and ahoCorasickSearch() helper functions for direct Aho-Corasick usage
+- Refactor requestReject() to use pure PHP + direct Aho-Corasick calls
+- Keep session constants in constants-index.php with guards for test compatibility
+- Replace PATH_ROOT_INCLUDE constant with hardcoded path string
+- Sync Dev001: verified login 28KB, tests 459/0 failures
+
+2026-05-17-14-48-00
+- Move aloe/framework/load.php contents into index.php inline
+- Update index.php paths: aloe/request.php, aloe/response.php, etc.
+- Remove Aho-Corasick hardcoded require (loaded by functions-dataMassage.php)
+- Reorder requires: load init.php before requestReject for PATH_ROOT_INCLUDE
+- Delete unused xan/app.php (singleton attempt, abandoned)
+- Sync Dev001 with local: verified login page 28KB, tests 459/0 failures
+
+2026-05-17-14-35-00
+- Flatten aloe/framework/* to aloe/ (removed framework/ directory)
+- Delete unused aloe files: cache.php, crypto.php, template.php
+- Delete unused aloe/functions/ directory (all files commented out)
+- Delete unused aloe/themes/ directory
+- Update index.php: require aloe/load.php (was aloe/framework/load.php)
+- Sync all changes to Dev001, verify login page working (28315 bytes)
+- Run PHPUnit tests on Dev001: 459 tests, 0 failures
+
+2026-05-16-15-21-00
+- Changed backup filename format to use underscore between date and time (YYYY-MM-DD_HH-MM-SS_server_sitename.zip)
+- Updated 010-dev001-2-zip.sh: date format +%F_%H-%M-%S with Dev001 prefix
+- Updated 020-prod001-2-zip.sh: date format +%F_%H-%M-%S with Prod001 prefix
+- Updated functions.sh backupSQL(): date format +%F_%H-%M-%S with sql001 prefix
+- Renamed all existing files in Dev001, Prod001, SQL001 directories to match new format
+- Fixed requestReject() to allow settings-api endpoint (backup email notifications)
+- Fixed csrf.php to add settings-api to exempt routes
+- Fixed functions.sh POSIX compatibility: replaced bash process substitution with temp file
 2026-05-13-16-35-00
 - Added error logging to router.php module loading paths
 - Enhanced debugging for unregistered modules and missing router files
