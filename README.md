@@ -19,30 +19,130 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
-2026-05-17-20-20-00
-- Move session constants from aloe/request.php to index.php
-- Remove session constants from xan/constants-index.php (now just a stub)
-- Keep requestReject(), requestMatcherLoad(), requestMatcherSearch() in aloe/request.php
-- Session constants now defined in index.php with guards to prevent redefinition
-- Sync Dev001: verified login 28KB, tests 459/0 failures
+2026-05-19-12-47-16
+- Add \xan\http_request input abstraction methods: server(), serverRaw(), header(), headerRaw(), get(), getRaw(), post(), postRaw()
+- Update router.php: migrate API keys, user agents, remote IPs to \xan\app::request() methods
+- Update watch.php: migrate token validation and path handling to Request class
+- Update upload.php: migrate file params to Request class
+- Update loading.php: migrate redirect and label params to Request class
+- Update app/LinksMT/router-api.php: migrate URL shortener params to Request class
+- Update app/UsersMT/class.php and logout.php: migrate login/logout logging to Request class
+- Update app/BlogM/class.php: migrate post URL generation to Request class
+- Update xan/recs.php and recsPDO.php: migrate error logging PHP_SELF to Request class
+- Update xan/sender.php: migrate error logging to Request class
+- Update xan/app-csrf.php: migrate CSRF token extraction from $_POST/headers to Request class
+- Update tools/siteAddRedirect.php: migrate domain sanitization from $_GET to filter_input
+- Valid framework bootstrap exceptions: xan-init.php, app.php, app-session.php, app-reject.php, functions-internet.php, functions-environment.php
+- All 447 PHPUnit tests passing
 
-2026-05-17-20-15-00
-- Move requestReject(), requestMatcherLoad(), requestMatcherSearch() from xan/constants-index.php to aloe/request.php
-- Change namespace from xan to aloe for requestReject and helper functions
-- Remove session constants from index.php (now in aloe/request.php)
-- Remove require_once('xan/constants-index.php') from index.php
-- Update requestReject call in index.php: \xan\requestReject() -> \aloe\requestReject()
-- Make xan/constants-index.php backward compatibility stub with session constants
-- Session constants now in aloe/request.php (with guards to prevent redefinition)
-- Sync Dev001: verified login 28KB, tests 459/0 failures
+2026-05-18-18-04-49
+- Update xanApp/index.php: minor comment changes (Early Request Reject, Classes Load)
+- Update xanApp/xan/app-reject.php: simplify PATH_ROOT_INCLUDE detection logic
+- Remove fallback path detection, use direct path assignment
 
-2026-05-17-19-55-00
-- Update constants-index.php: remove dependency on functions-dataMassage.php
-- Add ahoCorasickLoad() and ahoCorasickSearch() helper functions for direct Aho-Corasick usage
-- Refactor requestReject() to use pure PHP + direct Aho-Corasick calls
-- Keep session constants in constants-index.php with guards for test compatibility
-- Replace PATH_ROOT_INCLUDE constant with hardcoded path string
-- Sync Dev001: verified login 28KB, tests 459/0 failures
+2026-05-18-17-51-58
+- Phase 4: Complete removal of $aloe_request/$aloe_response global variables
+- Remove $aloe_request/$aloe_response from index.php (backward compat removed)
+- Update all module files to use \xan\app::request() instead of $aloe_request
+- Update all module files to use \xan\app::response() instead of $aloe_response
+- Update xan/module.php: rename parameter $aloe_response to $response in recCol_Picker_Content() and recCol_FileBucket_SetURL()
+- Update app/ProjectsMT/class.php: rename parameter $aloe_response to $response
+- Update router.php to use \xan\app::response()->redirectNow()
+- All function calls pass \xan\app::response() instead of $aloe_response
+- Remove migrate-phase4.sh script (cleanup)
+- All 459 tests passing (447 passed, 12 skipped, 0 failures)
+
+2026-05-18-17-32-00
+- Move init.php to xan/xan-init.php for better organization
+- Rename app_*.php files to use dashes: app-csrf.php, app-reject.php, app-request.php, app-response.php, app-session.php
+- Update all references to renamed files in index.php, test-app.php, tests/bootstrap.php, xan/app.php
+- Change xan\app to use public property $xan instead of setXan()/getXan() methods
+- Update index.php to use property assignment: \xan\app::inst()->xan = \xan\xan::inst()
+- Change require to require_once for app-* files in index.php
+- All 459 tests passing (447 passed, 12 skipped, 0 failures)
+
+2026-05-18-16-19-09
+- Rename xanApp/xan/app_init.php to xanApp/xan/app_reject.php (security check file)
+- Move session constants (SESS_ID, SESS_USER, SESS_PATH, etc.) from app_init.php to app_session.php
+- Move retry constants (RETRY_ERROR_COUNT, RETRY_POLL_COUNT, etc.) from app_init.php to app_session.php
+- Update xanApp/index.php: load app_reject.php first for early request rejection
+- Update xanApp/index.php: reorder requires - app_session.php before app_csrf.php
+- Update xanApp/tests/bootstrap.php: use app_reject.php for tests
+- Update xanApp/xan/app.php: change init() method to not startSession by default
+- Clean up comments in index.php
+
+2026-05-18-16-16-52
+- Renamed xanApp/xan/app_init.php to xanApp/xan/app_reject.php (security check file)
+- Update xanApp/index.php: load app_reject.php first for early request rejection
+- Update xanApp/tests/bootstrap.php: use app_reject.php for tests
+- Clean up comments and load order in index.php
+- All tests passing
+
+2026-05-18-16-04-50
+- Update xanApp/xan/app.php: implement singleton pattern with static request()/response() methods
+- Update xanApp/index.php: use \xan\app::inst()->init() pattern
+- Remove AppContext.php, AppContext-migration-example.php, migrate-to-appcontext.sh (simplified approach)
+- App now accessible via singleton: \xan\app::request(), \xan\app::response()
+- Keep backward compat variables $aloe_request/$aloe_response for Phase 4 migration
+- All 459 tests passing (447 passed, 12 skipped, 0 failures)
+
+2026-05-18-15-29-23
+- App Load clean up.
+
+2026-05-18-15-05-23
+- Rename xanApp/xan/constants-index.php to app_init.php with early security check
+- Update xanApp/xan/app.php: remove xan::inst() from constructor, add setXan() method
+- Update xanApp/xan/app_session.php: hardcode 'Y-m-d H:i:s' date format
+- Update xanApp/index.php: reorder loading - app classes before init.php
+- Update xanApp/tests/bootstrap.php: use app_init.php instead of constants-index.php
+- Security check runs FIRST using AhoCorasick directly (before framework loads)
+- App instantiation no longer depends on init.php (bootstraps independently)
+- xan singleton connected via setXan() after init.php loads
+- All 459 tests passing (447 passed, 12 skipped, 0 failures)
+
+2026-05-18-14-05-22
+- Delete xanApp/aloe/ directory (csrf.php, request.php, response.php, session.php)
+- Remove obsolete aloe namespace - all functionality migrated to xan namespace
+- Phase 3 complete: full migration from aloe to app_* classes finished
+- All 459 tests passing (447 passed, 12 skipped, 0 failures)
+- xanApp/test-app.php remains for diagnostic testing
+- No functional changes - cleanup only
+
+2026-05-18-13-57-50
+- Update index.php to use new \xan\app() container instead of aloe classes
+- Add xanApp/test-app.php for isolated testing of new app class
+- Update router.php: \aloe\session_init() -> \xan\session_init(), \aloe\csrf_* -> \xan\csrf_*
+- Update xanApp/xan/response.php type hints to use http_request/http_response
+- Update xanApp/xan/module.php type hints for aloe compatibility
+- Update router-logins.php: \aloe\session_terminate() -> \xan\session_terminate()
+- Update ProjectsMT/class.php type hints
+- Update templates/page-resp.php: \aloe\csrf_* -> \xan\csrf_*
+- Update aloe/session.php internal references (prepare for removal)
+- Phase 2 complete: index.php now uses xan namespace exclusively
+- All 459 tests passing, aloe namespace fully migrated to xan namespace
+
+2026-05-18-13-40-36
+- Add xanApp/xan/app_request.php (moved from aloe/request.php, class http_request)
+- Add xanApp/xan/app_response.php (moved from aloe/response.php, class http_response)
+- Add xanApp/xan/app_csrf.php (moved from aloe/csrf.php with csrf_* functions)
+- Add xanApp/xan/app_session.php (moved from aloe/session.php with session_* functions)
+- Update xanApp/xan/app.php to integrate new HTTP/CSRF/session classes
+- All classes use original function names (app_ prefix on filenames only)
+- All 459 tests passing on Dev001
+- Phase 1 of aloe-to-xan namespace migration complete
+
+2026-05-18-17-05-00
+- Fix PHPUnit test hardcoded paths in ConstantsXanTest.php (6 paths changed to relative)
+- Fix PHPUnit test hardcoded path in DatabaseConnectionTest.php (1 path changed to relative)
+- Fix PHP bug in functions-environment.php: \unset() to unset() language construct
+- All 13 integration tests now pass on both local Mac and Dev001
+- Local: 400 passing, Dev001: 402 passing (Linux /proc tests)
+
+2026-05-18-04-00-00
+- Delete orphaned xan/appCSRF.php (leftover from abandoned Stage 1 migration)
+- Delete orphaned xan/appSession.php (leftover from abandoned Stage 2 migration)
+- Clean up migration artifacts, no functional changes
+- Verified Dev001: login 200 OK, tests 459/0 failures
 
 2026-05-17-14-48-00
 - Move aloe/framework/load.php contents into index.php inline
