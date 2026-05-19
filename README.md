@@ -19,6 +19,16 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-19-16-23-47
+- Standardize xanDoProgressMsg() calls across 44 SSE handler files
+- Replace manual pattern: xanDoProgressMsg($key . $json) + unset + status_set + content_set
+- With cleaner pattern: xanDoProgressMsg($json, $key) with automatic cleanup
+- Update app/Xan_LabsM/do-importFMDumpMigration.php to use $resp->jsActionsJSON()
+- Replace json_encode($resp->jsActionsA) with $resp->jsActionsJSON() method call
+- Consistent error handling pattern across all do-print.php and do-*.php handlers
+- Backward compatible: xanDoProgressMsg() supports both old and new signatures
+- All 447 PHPUnit tests passing, 4 E2E tests passing
+
 2026-05-19-16-05-48
 - Update xan/xan.php xanDoProgressMsg() with optional $closeSessionKey parameter
 - When $closeSessionKey provided: auto-prepends key to message for JS final-message detection
