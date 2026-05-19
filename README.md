@@ -19,6 +19,14 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-19-14-41-59
+- Add jsActionsForPage() method to xan/response.php for unified error handling
+- Update templates/page-resp.php to auto-execute jsActions on page load (not just AJAX)
+- Update app/HomeM/content-page.php with demo of unified jsAlert pattern
+- Allows jsAlert(), jsConsoleLog(), etc. to work on regular web pages via xanDoJS()
+- Eliminates need for manual scriptsOnLoadA[] in content pages for alerts
+- All 447 PHPUnit tests passing, 4 E2E tests passing
+- 
 2026-05-19-13-06-43
 - Rename xan/response.php properties: aloe_request -> request, aloe_response -> response
 - Update xan/app.php setPage() to use ->request and ->response property names
