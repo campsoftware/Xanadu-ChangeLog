@@ -19,6 +19,16 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-19-13-06-43
+- Rename xan/response.php properties: aloe_request -> request, aloe_response -> response
+- Update xan/app.php setPage() to use ->request and ->response property names
+- Update xan/module.php all 14 usages from ->aloe_response to ->response
+- Update app/UsersMT/class.php redirect from ->aloe_response to ->response
+- Remove ~234 redundant lines from module content-page.php and do.php files
+- Files cleaned: 49+ module directories with content-page.php and/or do.php
+- Valid comments about aloe remain in app-session.php and app-csrf.php
+- All 447 PHPUnit tests passing, 4 E2E tests passing
+
 2026-05-19-12-47-16
 - Add \xan\http_request input abstraction methods: server(), serverRaw(), header(), headerRaw(), get(), getRaw(), post(), postRaw()
 - Update router.php: migrate API keys, user agents, remote IPs to \xan\app::request() methods
