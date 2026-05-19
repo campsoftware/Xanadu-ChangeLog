@@ -19,6 +19,17 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-19-16-05-48
+- Update xan/xan.php xanDoProgressMsg() with optional $closeSessionKey parameter
+- When $closeSessionKey provided: auto-prepends key to message for JS final-message detection
+- When $closeSessionKey provided: auto-cleans session, sets HTTP 200, clears content after sending
+- Enables cleaner SSE error handling pattern: xanDoProgressMsg($json, $sessionKey) vs manual cleanup
+- Update app/ContactsMT/do-print.php validation errors to use new unified pattern
+- Uses $resp->jsAlert() for user-visible error messages in SSE handlers
+- Demonstrates unified error handling: jsAlert() + xanDoProgressMsg() with auto-cleanup
+- Backward compatible: existing code without $closeSessionKey continues to work
+- All 447 PHPUnit tests passing, 4 E2E tests passing
+
 2026-05-19-14-41-59
 - Add jsActionsForPage() method to xan/response.php for unified error handling
 - Update templates/page-resp.php to auto-execute jsActions on page load (not just AJAX)
