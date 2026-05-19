@@ -19,6 +19,17 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-19-16-36-29
+- Standardize AJAX response encoding across 31 files
+- Replace manual pattern: json_encode($resp->jsActionsA)
+- With method call: $resp->jsActionsJSON()
+- Affects: AddressesMT, UsersMT, SettingsMT, CommsMT, CalendarM, SalesMT, PaymentsMT
+- Affects: ProjectsMT, StatsM, Xan_LabsM, xan/module.php
+- Benefits: Consistent encoding, extensible via method, future-proof
+- Keeps debug comments with JSON_PRETTY_PRINT unchanged
+- Keeps core implementation in response.php unchanged
+- All 447 PHPUnit tests passing, 4 E2E tests passing
+
 2026-05-19-16-23-47
 - Standardize xanDoProgressMsg() calls across 44 SSE handler files
 - Replace manual pattern: xanDoProgressMsg($key . $json) + unset + status_set + content_set
