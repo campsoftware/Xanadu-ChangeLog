@@ -19,6 +19,15 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-20-14-25-34
+- MEDIUM-004: Move appIsActive function to proper class location
+- Remove: Global appIsActive() function from xan-init.php
+- Remove: isActive() method from \xan\app class (HTTP layer)
+- Add: isActive() method to \xan\xan class (Xanadu features layer)
+- Update: DocumentsMT/class.php and ContactsMT/class.php to use \xan\xan::isActive()
+- Rationale: \xan\app handles HTTP comms, \xan\xan handles Xanadu features including app activation
+- All PHP files have valid syntax, no functional changes
+
 2026-05-20-13-49-13
 - MEDIUM-003: Standardize error handling across all SSE and AJAX endpoints
 - SSE Pattern (36 do-print.php files): status_set/content_set → jsAlert + xanDoProgressMsg
