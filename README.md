@@ -19,6 +19,14 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-20-15-44-00
+- Renamed app layer files from kebab-case to camelCase: app-csrf.php → appCSRF.php, app-reject.php → appReject.php, app-request.php → appRequest.php, app-response.php → appResponse.php, app-session.php → appSession.php
+- Renamed classes for consistency: http_request → appRequest, http_response → appResponse
+- Updated all references in index.php, app.php, response.php, xan.php, tests/bootstrap.php
+- Added isActive() method to \xan\xan class (moved from \xan\app), updated DocumentsMT/class.php and ContactsMT/class.php references
+- Deleted xanApp/test-app.php (Phase 2 validation complete, \xan\app now in production use)
+- Commented unreachable code in linkShortener.php (lines after return statement)
+
 2026-05-20-15-30-40
 - Commented out code that will never run in linkShortener.php
 
