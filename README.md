@@ -19,6 +19,9 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-20-15-30-40
+- Commented out code that will never run in linkShortener.php
+
 2026-05-20-14-43-22
 - LOW-001: Normalize PascalCase variable names to camelCase
 - Convert 40+ variables by lowercasing first character
