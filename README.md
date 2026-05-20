@@ -19,6 +19,16 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-20-13-31-50
+- MEDIUM-003: Standardize SSE error handling across 36 do-print.php files
+- Replace: status_set('500/400...') + content_set('Error')
+- With: jsAlert("❌ Error...") + xanDoProgressMsg()
+- Remove: jsCloseWindow() calls causing EventSource errors
+- Remove: Redundant unset($_SESSION) and status_set('200 OK')
+- Files: ContactsMT, ALM_*, Access*, Calendar*, Contacts*, Financial*, Planning*, Support*, Operations*, Settings*
+- Benefits: Consistent error UX, no EventSource connection errors
+- All 447 PHPUnit tests passing, PDF/EventSource E2E tests passing
+
 2026-05-19-16-36-29
 - Standardize AJAX response encoding across 31 files
 - Replace manual pattern: json_encode($resp->jsActionsA)
