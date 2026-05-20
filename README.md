@@ -19,6 +19,16 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-20-14-43-22
+- LOW-001: Normalize PascalCase variable names to camelCase
+- Convert 40+ variables by lowercasing first character
+- Examples: $EleTypeTemp → $eleTypeTemp, $LabelEN → $labelEN, $PasswordHashSeed → $passwordHashSeed
+- Examples: $ProjectsUUID → $projectsUUID, $ResponseIsProcessed → $responseIsProcessed
+- Examples: $LoginKeyOneTime → $loginKeyOneTime, $CookieLogin → $cookieLogin
+- 191 files changed, 1701 insertions(+), 1804 deletions(-)
+- All PHP files have valid syntax
+- Skipped: $ID (loop vars), $URL* (URL properties), $SERVER/$OS/$HANDLE (env vars)
+
 2026-05-20-14-25-34
 - MEDIUM-004: Move appIsActive function to proper class location
 - Remove: Global appIsActive() function from xan-init.php
