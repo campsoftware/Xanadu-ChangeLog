@@ -19,6 +19,13 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-21-15-43-09 - Simplify byte string parsing with ini_parse_quantity() (PHP 8.2+)
+- xan-init.php: Use ini_parse_quantity() for APP_UPLOAD_LIMIT calculation
+- appResponse.php: Remove duplicate stringBytesFormattedToNum(), use ini_parse_quantity() directly in peakMemoryUsageGet()
+- functions-dataMassage.php: Refactor stringBytesFormattedToNum() to use ini_parse_quantity() internally
+- Remove ~25 lines of manual byte multiplier parsing
+- Remove technical debt item: "Simplify upload limit parsing"
+
 2026-05-20-15-44-00
 - Renamed app layer files from kebab-case to camelCase: app-csrf.php → appCSRF.php, app-reject.php → appReject.php, app-request.php → appRequest.php, app-response.php → appResponse.php, app-session.php → appSession.php
 - Renamed classes for consistency: http_request → appRequest, http_response → appResponse
