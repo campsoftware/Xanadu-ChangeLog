@@ -10,11 +10,6 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 # Xanadu Pro Change Log
 
-**In Progress**
-- Sales add ProjectsTasks to SalesItems.
-- Convert from PHP 8.3 to PHP 8.5:
-  - **Find**: \Pdo::MYSQL_ATTR_FOUND_ROWS **Replace**: \Pdo\Mysql::ATTR_FOUND_ROWS
-
 **Try to use:** [ Found, Fixed, Updated, Moved, Added, Removed, Renamed, Replaced, Decided, Planning, NOTE ]
 
 **Change Log**
