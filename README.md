@@ -14,6 +14,15 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-24-15-45-00 - Improve error handling and remove file_exists dependency
+- xan-init.php: Update error suppress handler to log file location (errfile:errline) in xan-init.log
+- xan-init.php: Convert domain config loading from if/file_exists/else to try/catch (lines 33-39) - catches Error on missing file, sets 404, shows not found page
+- xan-init.php: Remove die() in favor of exit()
+- module.php: Add ?? [] null coalescing for $schemaD loops (lines 1528, 1633) in search filter methods
+- functions-helpers.php: Add ?? '' null coalescing for $_SESSION[SESS_USER]['Active'] and ['PrivAdmin'] in userIsActive() and userIsAdmin()
+- xan.php: Add null checks with ?? '' for $rowsD array keys ['DATA_TYPE'], ['TABLE_NAME'], ['COLUMN_NAME'], ['alter_sql'] in index operations
+- contentCard-dbCompare.php: Add null checks with ?? '' for $config array access before PDO instantiation
+
 2026-05-24-14-30-00 - Fix PHP 8 undefined array key warnings
 - module.php: Add ?? [] for $schemaD loops (lines 1528, 1633) in search filter methods 
 - functions-helpers.php: Add ?? '' for $_SESSION[SESS_USER]['Active'] and ['PrivAdmin'] in userIsActive() and userIsAdmin()
