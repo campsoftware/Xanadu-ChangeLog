@@ -14,6 +14,14 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-24-14-30-00 - Fix PHP 8 undefined array key warnings
+- module.php: Add ?? [] for $schemaD loops (lines 1528, 1633) in search filter methods 
+- functions-helpers.php: Add ?? '' for $_SESSION[SESS_USER]['Active'] and ['PrivAdmin'] in userIsActive() and userIsAdmin()
+- xan.php: Add null checks with ?? '' for $rowsD['DATA_TYPE'], ['TABLE_NAME'], ['COLUMN_NAME'], ['alter_sql'] in index operations
+- contentCard-dbCompare.php: Add null checks for $config['xandev'] and $config['scca'] before PDO instantiation
+- 447 PHPUnit tests passing, 4 E2E tests passing
+- Enables removal of error suppression handler masking 'Undefined array key' warnings
+
 2026-05-21-15-43-09 - Simplify byte string parsing with ini_parse_quantity() (PHP 8.2+)
 - xan-init.php: Use ini_parse_quantity() for APP_UPLOAD_LIMIT calculation
 - appResponse.php: Remove duplicate stringBytesFormattedToNum(), use ini_parse_quantity() directly in peakMemoryUsageGet()
