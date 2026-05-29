@@ -14,6 +14,14 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-29-16-25-00
+- Removed $eleWidth and $eleHeight properties from eleMeta class (xanApp/xan/eleMeta.php).
+- Removed Width and Height assignment from eleMeta constructor.
+- Renamed $colFormat parameter to $colFormatAs in functions-helpers.php for consistency with eleFormatAs naming.
+- Updated recs.php to use $colFormatAs variable name.
+- Added test-results/.last-run.json to .gitignore.
+- Removed xanApp/tests/test-results/.last-run.json and test-results/.last-run.json from git tracking.
+
 2026-05-24-15-45-00 - Improve error handling and remove file_exists dependency
 - xan-init.php: Update error suppress handler to log file location (errfile:errline) in xan-init.log
 - xan-init.php: Convert domain config loading from if/file_exists/else to try/catch (lines 33-39) - catches Error on missing file, sets 404, shows not found page
