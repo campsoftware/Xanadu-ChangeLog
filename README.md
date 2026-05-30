@@ -14,6 +14,10 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-30-15-53-20
+- Deleted Plans and PlansItems Modules.
+- Renamed Plans and PlansItems Tables to Foo and FooItems for a Module Generating comparison.
+
 2026-05-30-14-20-00
 - Rename IsXxx database column references to XxxYN pattern: IsMod -> ModYN, IsKey -> KeyYN, IsKeyPrimary -> KeyPrimaryYN, IsKeyForeign -> KeyForeignYN, IsDefined -> DefinedYN, IsFindable -> FindableYN, IsGenerated -> GeneratedYN, IsIndexFullText -> IndexFullTextYN, IsNullable -> NullableYN, IsAllDay -> AllDayYN, IsBackground -> BackgroundYN.
 - Update eleMeta class properties: $isMod -> $modYN, $isKey -> $keyYN, $isKeyPrimary -> $keyPrimaryYN, $isKeyForeign -> $keyForeignYN, $isDefined -> $definedYN, $isFindable -> $findableYN, $isGenerated -> $generatedYN.
