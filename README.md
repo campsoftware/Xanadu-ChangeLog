@@ -14,6 +14,13 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-27-00-00-00
+- Added parseCommentJson() helper to parse SQL COMMENT JSON metadata
+- Added sqlCommentsLoad parameter to modulesUpdate() and schemaUpdate() for override control
+- Parse TABLE_COMMENT JSON for module metadata (NamePlural, NameSingular, FontIcon, RelatedTablesA)
+- Parse COLUMN_COMMENT JSON for schema metadata (LabelEN, GroupName, GroupCardOrder, GroupColOrder)
+- Updated SettingsModules INSERT/UPDATE to include NamePlural, NameSingular, FontIcon columns
+- Updated SettingsSchema INSERT/UPDATE to include GroupName, GroupCardOrder, GroupColOrder columns
 2026-05-30-15-53-20
 - Deleted Plans and PlansItems Modules.
 - Renamed Plans and PlansItems Tables to Foo and FooItems for a Module Generating comparison.
