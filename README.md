@@ -14,6 +14,20 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-05-30-14-20-00
+- Rename IsXxx database column references to XxxYN pattern: IsMod -> ModYN, IsKey -> KeyYN, IsKeyPrimary -> KeyPrimaryYN, IsKeyForeign -> KeyForeignYN, IsDefined -> DefinedYN, IsFindable -> FindableYN, IsGenerated -> GeneratedYN, IsIndexFullText -> IndexFullTextYN, IsNullable -> NullableYN, IsAllDay -> AllDayYN, IsBackground -> BackgroundYN.
+- Update eleMeta class properties: $isMod -> $modYN, $isKey -> $keyYN, $isKeyPrimary -> $keyPrimaryYN, $isKeyForeign -> $keyForeignYN, $isDefined -> $definedYN, $isFindable -> $findableYN, $isGenerated -> $generatedYN.
+- Update constants-xan.php: DBS_IS_KEYPRIMARY constant value 'KeyPrimaryYN', DBS_IS_KEYFOREIGN constant value 'KeyForeignYN' (was reversed KeyYNPrimary/KeyYNForeign).
+- Update xan.php schema sync SQL queries and variable names for SettingsSchema UPSERT operations.
+- Update module.php eleMeta property references for modYN, keyYN, definedYN, generatedYN.
+- Update recs.php GeneratedYN column reference in INSERT/UPDATE queries.
+- Update CalendarEventsMT/class.php, do-print.php, CalendarM handlers for AllDayYN and BackgroundYN.
+- Update contentCard-dbCompare.php SettingsSchema INSERT/UPDATE parameter names and column names.
+- Update functions-importALM.php OrganizationYN column reference.
+- Removed all .bak backup files from repository (cleanup).
+- Updated doCommit.sh to reference doCommitMessage.txt (removed -next suffix and archiving logic).
+- Synced all changes to dev001, cleared schema cache, verified 447 tests pass.
+
 2026-05-29-16-25-00
 - Removed $eleWidth and $eleHeight properties from eleMeta class (xanApp/xan/eleMeta.php).
 - Removed Width and Height assignment from eleMeta constructor.
