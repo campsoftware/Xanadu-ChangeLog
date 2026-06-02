@@ -14,6 +14,16 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-02-12-20-00
+- Added xanDoProgressShutdownHandler() to catch fatal PHP errors and send as SSE messages
+- Updated EventSource error handling to show alert() popup with error details
+- Added PATH_ROOT_XANAPP path cleanup for cleaner error messages (no full server paths)
+- Fixed \require_once auto-format issue in module.php
+- Deleted incomplete BlastsMT module causing fatal errors
+
+2026-05-30-17-00-00
+- Fixed CREATE VIEW statements in ContactsMT class.php: Changed 'Active' to 'ActiveYN' column reference in Contacts_Active and Contacts_NotActive view definitions (column was renamed from IsActive to ActiveYN earlier).
+
 2026-05-27-00-00-00
 - Added parseCommentJson() helper to parse SQL COMMENT JSON metadata
 - Added sqlCommentsLoad parameter to modulesUpdate() and schemaUpdate() for override control
