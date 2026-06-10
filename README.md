@@ -14,6 +14,15 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-10-18-29-00
+- Generate Blasts module suite (BlastsMT, BlastsAttachmentsMT, BlastsContentMT, BlastsRecipientsMT, BlastsPDFMT)
+- Fix module generator namespace: class.php → namespace xan; router/do → global namespace
+- Major refactor of do-generator.php with error suppression, strPatternCount, tableName parsing
+- Add generator-trigger.php for module generation endpoint
+- Fix ContactsMT class.php template (restore namespace xan; after incorrect removal)
+- Update .gitignore for Playwright CLI cache (.playwright-cli/)
+- Minor fixes: index.php, xan-init.php, contentCard-generator.php, doModuleGen.txt
+
 2026-06-02-12-20-00
 - Added xanDoProgressShutdownHandler() to catch fatal PHP errors and send as SSE messages
 - Updated EventSource error handling to show alert() popup with error details
