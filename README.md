@@ -14,6 +14,21 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-14-17-24-34
+- Migrated configuration from init_{domain}.php to .env files + inline parser in xan-init.php
+- Added .env.foo.xanweb.app template (safe to commit) and .gitignore rules for .env.*
+- Refactored xan/xan-init.php: CLI fallback reads .env.dev → ACTIVE_DOMAIN → .env.{domain}
+- Updated all 22 Integration test files to require xan/xan-init.php (no hardcoded URLs)
+- Updated 3 E2E test files to read .env.dev → .env.{domain} chain for credentials
+- Fixed hardcoded paths in content cards: spinner URL, logo URL, dbCompare dbname, cmdDo log path
+- Replaced cmdDo.sh polling mechanism with direct sudo cmdDoPermissions.sh from PHP
+- Updated do-backup.php: exec('sudo cmdDoPermissions.sh') instead of .do file trigger
+- Updated SettingsMT + StatsM log cards to show cmdDoPermissions.sh status and logs
+- cmdDoPermissions.sh self-configures from .env files (derives APP_ROOT from script location)
+- Deleted 7 orphan PHP files: generator-trigger, backup label print, certbot x2, portals x3
+- Removed init-loader.php and init_foo.xanweb.app.php (superseded by .env architecture)
+- Tests: PHPUnit 445 passed/12 skipped/2 pre-existing failures, E2E 5 passed
+
 2026-06-14-11-53-00
 - Fixed Blasts module generator: schema analysis cascade, audit column validation, dynamic checks
 - Added ModUUIDUsers to Blasts family tables (5 tables) fixing doSave 500 error
