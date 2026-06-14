@@ -14,6 +14,20 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-14-11-53-00
+- Fixed Blasts module generator: schema analysis cascade, audit column validation, dynamic checks
+- Added ModUUIDUsers to Blasts family tables (5 tables) fixing doSave 500 error
+- Converted datetime columns to timestamp for framework compatibility
+- Renamed 43 varchar(3) boolean columns to *YN convention across 12 business tables
+- Renamed SettingsModules.IsTableDefined to TableDefinedYN (framework alignment)
+- Added E2E test: tests/e2e/test-blasts-module.spec.js (4 tests, login/CRUD/portals)
+- Fixed generator to read from xan::$schemaD instead of raw INFORMATION_SCHEMA
+- Fixed generatorAnalyzeSchema() for empty column comments and tinyint false positives
+- Generator UI: "Check then Generate" flow with per-table analysis panels
+- Fixed test files for ActiveYN column rename (DatabaseConnectionTest, ConstantsXanTest)
+- Cleaned .playwright-cli cache, removed node_modules from git, moved E2E test to xanApp/tests/
+- Tests: PHPUnit 443 passed/12 skipped, E2E 8 passed/1 flaky (response time)
+
 2026-06-10-18-29-00
 - Generate Blasts module suite (BlastsMT, BlastsAttachmentsMT, BlastsContentMT, BlastsRecipientsMT, BlastsPDFMT)
 - Fix module generator namespace: class.php → namespace xan; router/do → global namespace
