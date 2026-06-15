@@ -14,6 +14,20 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-15-13-04-49
+- Moved Module Generator button to top of Xan Labs page for easy access
+- Fixed all 4 Blasts E2E tests: login, schema check, CRUD, and child portals
+- Fixed CRUD test URL casing (/Blasts → /blasts) and input selectors for Xanadu custom inputs
+- Fixed schema check test URL and result selector to match actual generator UI
+- Fixed child portals test to verify no fatal errors and portal content renders
+- BlastsAttachments.SortOrder: tinyint → decimal(10,2) for consistency with other SortOrder columns
+- Test suite: 455 tests, 0 failures, 12 skipped, E2E 8 passed
+
+2026-06-14-17-45-35
+- Removed orphan test files for non-existent PlansMT and PlansItemsMT modules
+- These modules were never deployed (generated but not created), causing 2 PDF test failures
+- Test suite now clean: 455 tests, 0 failures, 12 skipped, E2E 5 passed
+
 2026-06-14-17-24-34
 - Migrated configuration from init_{domain}.php to .env files + inline parser in xan-init.php
 - Added .env.foo.xanweb.app template (safe to commit) and .gitignore rules for .env.*
