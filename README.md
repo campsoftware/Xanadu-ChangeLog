@@ -14,6 +14,25 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-18-15-12-00
+- Replaced FontAwesome with custom icon font subset (iconFontFA): 140+ icons, woff2/woff, CSS, HTML ref
+- fontIcon() now translates fas/far/fab prefixes to xifa classes; outputs local icon font instead of FA CDN
+- Added iconFontFA build pipeline (Node.js) with keywords.json and SVG source management
+- Added font-display: swap to iconFont.css for faster initial paint
+- Deferred most JS libraries in page-resp.php (moment, jQuery UI, bootstrap, fullcalendar, flatpickr, chartjs, etc.)
+- Added performance.mark timing throughout page load pipeline (jQuery, xan.js, CSS, deferred scripts)
+- Fixed infinite recursion bug in response.php jsActionsJSON(); added 50KB filter to skip redundant jsHTMLSet on initial page loads
+- Added IMAGE_LAZY_EAGER_LIMIT constant (5); replaced hardcoded >20 lazy-eager threshold across all MT modules
+- navDropdownItem() now checks \defined() before \constant() to prevent fatal errors with undefined icon constants
+- ContactsMT: fixed order-by label Pinned -> PinnedYN; CalendarEventsMT: removed Pinned from order label
+- Home page re-enabled Projects, Sales, CalendarEvents, Links portal cards
+- Xan Labs complete redesign: card-based layout, section grouping, status badges (Works/Disabled/Needs Update)
+- Labs content cards now guarded by arrayValueFound + reqID check; only load when navigated to
+- PDF templates switched from FontAwesome to local iconFont + iconFontFA
+- New Playwright E2E test: analyze-home-html.spec.js for page size and icon count analysis
+- All tests passing: 443 PHPUnit passed, 8 E2E passed, 12 skipped (IMAP/Sender/Inflector environmental, not regressions)
+- Removed old build scripts, duplicate SVGs, and stale Playwright report artifacts
+
 2026-06-15-13-04-49
 - Moved Module Generator button to top of Xan Labs page for easy access
 - Fixed all 4 Blasts E2E tests: login, schema check, CRUD, and child portals
