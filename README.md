@@ -14,6 +14,19 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-21-12-00-00
+- Fixed JavaScript "Unexpected end of input" error in page-resp.php
+- Changed NAV_DEBUG HTML comment to JS comment (line 677) to prevent escaped entity breakage
+- Changed SIZE markers inside script blocks from HTML comments to JS block comments
+- CommsMT/class.php: Fixed invalid PHP syntax $resp->scriptsEndA[] .= to $resp->scriptsEndA[] =
+- Xan_LabsM/content-page.php: Removed nested script tags from scriptsOnLoadA[] injection
+- UsersMT/logins/login/contentCard-user-login.php: Fixed login button handlers
+  - Moved spinner/show logic inside function definitions (was executing immediately)
+  - Fixed setTimeout to pass function reference instead of calling immediately
+  - Added return false to prevent form submission
+  - Removed nested script tags from heredoc, moved focus code to scriptsEndA[]
+- All tests passing: 443 PHPUnit passed, 8 E2E passed
+
 2026-06-18-15-12-00
 - Replaced FontAwesome with custom icon font subset (iconFontFA): 140+ icons, woff2/woff, CSS, HTML ref
 - fontIcon() now translates fas/far/fab prefixes to xifa classes; outputs local icon font instead of FA CDN
