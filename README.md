@@ -14,6 +14,15 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-23-19-54-31
+- Fixed arrow button underline styling in portals
+- Added text-decoration: none !important to .btn class in xan.css.css
+- Updated JavaScript tooltip init to exclude buttons from underline styling
+- Buttons with tooltips no longer show underline, nav links keep underline
+- Synced xan.css.css and page-resp.php to dev001
+- PHPUnit: 442 passed, 12 skipped, 1 failed (known inflector 'leaf' issue)
+- E2E: 16 passed, 2 failed (timing issues unrelated to changes)
+
 2026-06-23-20-00-00
 - Fixed module routing bug - require(__DIR__ . '/content-page.php') instead of relative paths
 - Updated 44+ module routers to use absolute path with __DIR__
