@@ -14,6 +14,17 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-23-20-00-00
+- Fixed module routing bug - require(__DIR__ . '/content-page.php') instead of relative paths
+- Updated 44+ module routers to use absolute path with __DIR__
+- Fixed pathLastSet() function in UsersMT/class.php with early returns and proper branch separation
+- Added special path detection for /print/, /view/, /delete/, etc. to prevent UUID false positives
+- Fixed case sensitivity in module registry lookups (strCaseLower for module keys)
+- Added record existence validation before redirect/save
+- Added isset($resp->response) guard for modules extending moduleMini
+- Reverted 6 M modules (HomeM, CalendarM, etc.) to old-style response (they extend moduleMini)
+- All tests passing: 443 PHPUnit passed, 17 E2E passed, 12 skipped
+
 2026-06-21-12-00-00
 - Fixed JavaScript "Unexpected end of input" error in page-resp.php
 - Changed NAV_DEBUG HTML comment to JS comment (line 677) to prevent escaped entity breakage
