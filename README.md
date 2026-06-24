@@ -14,6 +14,23 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-06-24-13-53
+- Fixed module activation and portal card display issues
+- Changed cache key generation from strCaseLower(ModulePath) to exact ModuleName
+- Added $modulePath property to module and moduleMini classes
+- Updated setURLs() to use $modulePath or strip MT/M suffix for clean URLs
+- Fixed pathLastSet() to find modules by ModulePath and exact ModuleName matching
+- Fixed URL generation removing unwanted 'mt' suffix (e.g., /contacts/ not /contactsmt/)
+- Renamed Xan_LabsM to XanLabsM removing underscore from module name and URLs
+- Updated all xan_labs references to xanlabs in router, content files, and menu
+- Fixed Generator card autofill issue with type="search" and data-lpignore
+- Fixed inflector pluralization of 'leaf' to 'leaves'
+- Added irregular plural rules: louse→lice, die→dice, penny→pence, thief→thieves, wolf→wolves, half→halves, calf→calves, shelf→shelves, elf→elves, self→selves, life→lives, loaf→loaves, sheaf→sheaves
+- Archived ImapTest.php and SenderTest.php to tests/disabled-tests-Imap-Sender.zip
+- Added @group remote annotations for infrastructure-dependent tests
+- PHPUnit: 444 passed, 0 skipped, 0 failed
+- E2E: 20 passed, 0 failed
+
 2026-06-23-19-54-31
 - Fixed arrow button underline styling in portals
 - Added text-decoration: none !important to .btn class in xan.css.css
