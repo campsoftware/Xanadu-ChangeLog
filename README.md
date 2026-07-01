@@ -14,6 +14,19 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-01-18-30-15
+- Moved cache utility scripts from xanApp root to tools/ops/ (clear-cache.php, clear-menu-cache.php, delete-menu-cache.php)
+- Deleted old favicon (favicon-old-97kb.ico) - replaced with optimized 15KB version
+- Added favicon file size check (20KB max) to doTests.sh
+- Cleaned up tools/ directory: removed _archive/, iconFont/, iconFontFA/ directories
+- Consolidated icon fonts into single tools/xanFont/ system with 157 SVG icons
+- Generated new xanFont files (woff2, css, html) using fantasticon build.js
+- Created data-singular-plural.txt with 417 singular/plural word pairs for inflector testing
+- Created InflectorDataValidationTest.php with comprehensive test coverage and override support
+- Added ~50 irregular plural rules (chief→chiefs, phenomenon→phenomena, index→indices, vertex→vertices, etc.)
+- Fixed ConstantsXanTest error handler warnings by using setUpBeforeClass
+- Tests: 448 PHPUnit passed, 20 E2E passed
+
 2026-06-30-18-25-45
 - Created data-singular-plural.txt with 417 singular/plural word pairs for inflector testing
 - Created InflectorDataValidationTest.php with comprehensive test coverage and override support
