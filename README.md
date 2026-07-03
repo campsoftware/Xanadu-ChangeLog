@@ -14,6 +14,23 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-02-16-26-14
+- Fixed doTests log directory path from legacy Projects folder to working directory
+- All PHPUnit tests passing (448 tests)
+- All Playwright E2E tests passing (20 tests)
+- Favicon size check validated (14KB within 20KB limit)
+- Constants Arrays tests verified (8 tests)
+- Functions Data Massage tests verified (17 tests)
+- Functions Files Paths tests verified (7 tests)
+- Inflector tests verified (19 tests)
+- JsonDecodeSafe audit tests verified (2 tests)
+- Login authentication flow tests verified (2 tests)
+- Print functionality tests verified (6 tests)
+- Request Reject security tests verified (11 tests)
+- Login Flow E2E test passing (authentication and navigation)
+- Contact PDF Generation E2E test passing (EventSource streaming, PDF generation)
+- Tests: 448 PHPUnit passed, 20 E2E passed
+
 2026-07-01-18-30-15
 - Moved cache utility scripts from xanApp root to tools/ops/ (clear-cache.php, clear-menu-cache.php, delete-menu-cache.php)
 - Deleted old favicon (favicon-old-97kb.ico) - replaced with optimized 15KB version
