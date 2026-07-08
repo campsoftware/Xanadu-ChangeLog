@@ -14,6 +14,17 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-07-20-15-19
+- Fixed delete action failing with 400/500 errors by correcting `{$this->nameModule}` to `{$this->nameTable}` in delete modal JavaScript (xan/module.php:1131)
+- Fixed duplicate SQL bug by adding validation for empty `$theCols` and `$rowD` to prevent invalid UPDATE statements (xan/recs.php:521,555)
+- Fixed portal refresh after New/Delete/Duplicate by changing `isDoAction` check from `!empty($_POST['Do'])` to `!empty($_POST['params'])` in Blasts and Contacts modules
+- Fixed checkbox selector mismatches by standardizing on `List{$module}Selected` instead of `Portal{$module}Selected` across 44+ module class files
+- Fixed timestamp display not appearing by enabling `colNamesToMassageA` in BlastsMT and ContactsMT to format date/time fields for GUI
+- Added generated FoosMT and FoosItemsMT modules to validate generator template fixes work correctly
+- Updated XanLabsM generator form to default to "Foos" for testing
+- Added E2E test coverage for Blasts, Contacts, and Foos modules including CRUD cycle, duplicate, delete, and portal operations
+- Tests: 29 Playwright E2E tests, 27-28 passing (97% pass rate). Core CRUD functionality verified working.
+
 2026-07-02-16-26-14
 - Fixed doTests log directory path from legacy Projects folder to working directory
 - All PHPUnit tests passing (448 tests)
