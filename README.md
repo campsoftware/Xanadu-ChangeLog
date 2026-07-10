@@ -14,6 +14,20 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-10-14-44-55
+- Fixed ContactsTagsMT print functionality by correcting SQL query to use ContactsTagsJoinMT with LEFT JOIN to Contacts instead of querying Contacts directly with invalid UUIDContactsTags column (app/ContactsTagsMT/do-print.php)
+- Added contact name display in print output with proper formatting (Last, First) and Company fallback for contacts with tags
+- Consolidated Blasts module architecture by removing BlastsContentMT and BlastsPDFMT modules (consolidated into BlastsMT)
+- Simplified BlastsAttachmentsMT and BlastsRecipientsMT modules reducing code duplication and maintenance surface
+- Added new BlastsMessagesMT module for blast message management and tracking
+- Removed obsolete do.php action files from BlastsMT following architectural consolidation
+- Improved xan.js and xan.css minification logging with consistent formatting and alignment (xan/xan.php)
+- Refactored HomeM dashboard layout with improved column headers and spacing for Labels 5160 and Blasts sections (app/HomeM/class.php)
+- Added E2E test coverage for contact loading and CRUD operations with safe test patterns (contact-load.spec.js, contacts-crud-safe.spec.js)
+- Removed temporary development and debug scripts from tools/ directory (apply-foos-comments*.php, debug-duplicate.php, fix-database-permissions.php)
+- Updated .gitignore to exclude generated files and Playwright test artifacts
+- Tests: PHPUnit 448 tests, 447 passed, 1 failed (99.8% pass rate) - ContactsTagsMT print page load test has empty response body issue under investigation, PDF generation fixed and passing
+
 2026-07-07-20-15-19
 - Fixed delete action failing with 400/500 errors by correcting `{$this->nameModule}` to `{$this->nameTable}` in delete modal JavaScript (xan/module.php:1131)
 - Fixed duplicate SQL bug by adding validation for empty `$theCols` and `$rowD` to prevent invalid UPDATE statements (xan/recs.php:521,555)
