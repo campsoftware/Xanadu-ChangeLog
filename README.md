@@ -14,6 +14,22 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-16-14-02-11
+- Added PHP future compatibility checker tool (xanApp/tools/check-php-future-compat.php) scanning for patterns deprecated in PHP 7.0 through 8.5
+- Updated doTests.sh to run future compat check before PHPUnit and E2E tests
+- Removed deprecated curl_close() calls from 20 integration test files (18 PrintAuthenticatedTest + PrintTest + LoginTest)
+- Fixed trim(null) warning in functions-environment.php by adding null coalesce guard (?? '')
+- Fixed static::${$var} dynamic property access in inflector.php using ReflectionProperty for PHP 8.2+ compatibility
+- Renamed ALM module icons to use FI_ALM_* constants for naming consistency (8 module class files)
+- Reordered ContactsMT detail card fields (FollowUpTS, Source placement)
+- Added path validation in UsersMT::pathLastSet() to prevent cross-module redirects
+- Updated XanLabsM generator with improved schema analysis and output formatting
+- Fixed page-resp.php display style leak to generated inputs
+- Split eleDateTimeDB flatpickr and selector into separate table cells
+- Added coins icon to xanFont (SVG + rebuilt woff/woff2/css/html)
+- Tests: PHPUnit 448 tests, 448 passed, 0 failed (100% pass rate)
+- Tests: Playwright E2E 23 tests, 23 passed
+
 2026-07-10-14-44-55
 - Fixed ContactsTagsMT print functionality by correcting SQL query to use ContactsTagsJoinMT with LEFT JOIN to Contacts instead of querying Contacts directly with invalid UUIDContactsTags column (app/ContactsTagsMT/do-print.php)
 - Added contact name display in print output with proper formatting (Last, First) and Company fallback for contacts with tags
