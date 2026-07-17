@@ -14,6 +14,23 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-17-13-49-58
+- Refactored XanLabsM generator with generatorRunAll() extracted from do-generator.php
+- Added generator safety: skip existing modules (never overwrite), skip ContactsMT template source, skip zzImport* utility tables
+- Added generator filter support: comma-delimited lists ("Blasts,BlastsAttachments"), wildcard ("Blasts*"), and wildcards within comma lists
+- Auto-trigger generation when schema checks pass — single round-trip, removed manual "Generate All" button
+- Added Font Icon validator to generatorAnalyzeSchema: blocks generation if FI_TABLENAME constant is missing from constants-xan.php
+- Added missing FI_BLASTSMESSAGES constant to constants-xan.php
+- Removed duplicate constant definitions (FI_PROJECTSITEMS, FI_PROJECTSTASKS, FI_PURCHASESITEMS, FI_SALESITEMS) from constants-xan.php
+- Fixed SSE corruption in xanDoProgressLoop() by adding HTTP_ACCEPT guard for text/event-stream
+- Added xanFont sync tool (tools/xanFont/sync-icons.php) — auto-copies missing SVGs from FontAwesome Pro and rebuilds icon font
+- Rebuilt xanFont with envelope-open-text SVG for BlastsMessages module
+- Updated generator UI label to "Module Name(s)" with placeholder showing comma/wildcard examples
+- Set generator form default value to "Foos"
+- Created missing cmdDoPermissions.log file to fix /stats page 500 error
+- Tests: PHPUnit 448 tests, 448 passed, 0 failed (100% pass rate)
+- Tests: Playwright E2E 26 tests, 26 passed
+
 2026-07-16-14-02-11
 - Added PHP future compatibility checker tool (xanApp/tools/check-php-future-compat.php) scanning for patterns deprecated in PHP 7.0 through 8.5
 - Updated doTests.sh to run future compat check before PHPUnit and E2E tests
