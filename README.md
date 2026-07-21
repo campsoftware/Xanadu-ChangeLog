@@ -14,6 +14,17 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-21 14:16:48
+- Generated BlastsMT, BlastsAttachmentsMT, BlastsMessagesMT, and BlastsRecipientsMT modules from Dev001 schema
+- Updated XanLabs module generator to disable noisy schema-convention checks for imported/legacy tables
+- Updated XanLabs schema-check gate to require zero blockers and zero suggestions before auto-generating
+- Updated XanLabs schema update to skip the legacy-table convention report
+- Fixed module generator to clear xan-modules-cache.json after generation so newly generated modules are available immediately
+- Fixed generated class title-column selection to skip audit/flag/timestamp columns and skip primary-key picker generation
+- Updated E2E Blasts test to expect auto-generation completion instead of a manual "Generate All" button
+- PHPUnit: 448/448 passed, 0 failed, 0 errors on dev001
+- E2E: 28/33 passed, 5 failed (Blasts CRUD selector ambiguity, Contact Load login timeout, Contacts CRUD count mismatch, Blasts generator timeout)
+
 2026-07-17-13-49-58
 - Refactored XanLabsM generator with generatorRunAll() extracted from do-generator.php
 - Added generator safety: skip existing modules (never overwrite), skip ContactsMT template source, skip zzImport* utility tables
