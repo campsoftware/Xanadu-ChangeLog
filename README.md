@@ -14,6 +14,16 @@ Read more about Xanadu: https://campsoftware.com/products/xanadu.php
 
 **Change Log**
 
+2026-07-21 19:22:00
+- Fixed schema update to label Y/N columns with "Is " prefix and default them to ARRAY_YESNO choices
+- Fixed module generator to render Y/N columns as ELE_SELECT with ARRAY_YESNO
+- Fixed module generator to set timestamp/date/time input cells to fixed widths (ELE_WIDTH_TIMESTAMP/ELE_WIDTH_DATE)
+- Fixed module generator list title to show "Active" instead of "ActiveYN" for active records
+- Fixed generated portal cards to include New, Duplicate, Delete controls and row selector checkboxes
+- Regenerated BlastsMT, BlastsAttachmentsMT, BlastsMessagesMT, BlastsRecipientsMT on Dev001 with the above fixes
+- PHPUnit: 448/448 passed, 0 failed, 0 errors on dev001
+- E2E: test-blasts-module.spec.js 4/4 passed; blasts-crud-full.spec.js 3/4 passed (pre-existing duplicate-selector ambiguity)
+
 2026-07-21 14:16:48
 - Generated BlastsMT, BlastsAttachmentsMT, BlastsMessagesMT, and BlastsRecipientsMT modules from Dev001 schema
 - Updated XanLabs module generator to disable noisy schema-convention checks for imported/legacy tables
@@ -1445,7 +1455,7 @@ In Progress
 - Fixed a bug in xan.js.js xanDoSave.
 - Updated pdf-default to share a style.css file.
 - Updated do-print.php files to use the shared style.css file.
-- Updated pdf-default to no longer use a default header, instead replacing "[[HEADER]]".
+- Updated pdf-default to no longer use a default header, instead replacing `"[[HEADER]]"`.
 - Added a new element recCol_StringInlineMPDF that calls recCol_StringInline and removes all uses of "!important" which has issues in mPDF.
 - Updated Projects do-print.php.
 
