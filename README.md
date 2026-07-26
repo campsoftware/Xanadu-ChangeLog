@@ -14,6 +14,17 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log**
 
+2026-07-26 16:30:02
+
+- Refactored recMassageDefaultsYN in xanApp/xan/module.php to accept an explicit array of YN column names, defaulting to no-op when empty for legacy safety
+- Updated generator in xanApp/app/XanLabsM/do-generator.php to build the YN column list per table and call the new helper instead of hardcoding ActiveYN/PinnedYN loops
+- Updated ContactsMT, BlastsMT, BlastsAttachmentsMT, BlastsMessagesMT, and BlastsRecipientsMT recMassage() to use recMassageDefaultsYN with their actual YN columns
+- Fixed portal checkbox value generation to use the record primary key instead of an empty string
+- Added recPortalRefresh helper in xanApp/xan/module.php that re-renders only the portal card body to preserve expand/resize state and updates the header count badge via a fresh COUNT query
+- Updated Add, Duplicate, Delete, and pagination flows to use recPortalRefresh so the portal title count updates correctly
+- Fixed progress span alignment in xanApp/templates/page-resp.php
+- Verified PHPUnit 448 passed and Playwright E2E 33 passed (481/481 total)
+
 2026-07-24 16:45:41
 
 - Fixed XanLabs module generator to emit clean // Name BEGIN/END chunk markers with correct indentation and no duplicate or partial pairs
