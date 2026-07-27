@@ -14,6 +14,27 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log**
 
+2026-07-27 13:00:15
+
+- Redesigned Blasts schema: moved message content (Subject, BodyHTML, BodyPlain, FromName, FromEmail, ReplyTo) from Blasts to BlastsMessages
+- Dropped UUIDBlasts from BlastsAttachments; attachments are now children of BlastsMessages only
+- Consolidated Blasts detail cards into Overview and Progress
+- Moved ContactsViewName and ContactsFilterJSON into the Overview card
+- Merged ScheduledTS, StartedTS, CompletedTS into the Progress card
+- Reordered Blasts detail portals to show Recipients before Messages
+- Improved BlastsRecipients portal to show stacked NameFirst, NameLast, EmailTo, Status
+- Improved BlastsMessages portal to show recipient info before Subject and Status
+- Made BlastsMessages portal rows clickable to navigate to the message detail page
+- Added Add Contact picker to the BlastsRecipients portal for adding a single Contact as a recipient
+- Added Add Contact View picker to the Blasts Overview card for bulk-adding recipients from a Contacts view with duplicate prevention
+- Added BlastsMessages detail page with Status, Content, Delivery cards and a BlastsAttachments child portal
+- Added AddContact, ContactsSearch, and AddContactView actions to BlastsRecipientsMT do.php
+- Updated Blasts E2E tests to assert the new card/portal layout
+- Added blasts-messages-smoke.spec.js to verify /blasts/ and /blastsmessages/ load without 500
+- PHPUnit 448/448 passed on dev001
+- Blasts CRUD Playwright E2E 4/4 passed
+- Blasts/Messages smoke Playwright E2E 3/3 passed
+
 2026-07-26 16:30:02
 
 - Refactored recMassageDefaultsYN in xanApp/xan/module.php to accept an explicit array of YN column names, defaulting to no-op when empty for legacy safety
