@@ -14,7 +14,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log**
 
-2026-07-27 13:00:15
+2026-07-27 13:00:15 
 
 - Redesigned Blasts schema: moved message content (Subject, BodyHTML, BodyPlain, FromName, FromEmail, ReplyTo) from Blasts to BlastsMessages
 - Dropped UUIDBlasts from BlastsAttachments; attachments are now children of BlastsMessages only
