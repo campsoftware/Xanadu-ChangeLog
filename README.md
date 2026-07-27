@@ -14,7 +14,30 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log**
 
-2026-07-27 13:00:15 
+2026-07-27 17:19:00
+
+- Fixed modulesUpdate() and schemaUpdateColumns() in xanApp/xan/xan.php to only process BASE TABLE, excluding views from SettingsModules/SettingsSchema
+- Filtered UUID column discovery in modulesUpdate() to only scan base tables for related table mapping
+- Preserved existing NamePlural/NameSingular/FontIcon from SettingsModules when TABLE_COMMENT does not explicitly provide new values
+- Updated namePlural/nameSingular to human-friendly forms across BlastsMT, BlastsAttachmentsMT, BlastsMessagesMT, and BlastsRecipientsMT
+- Removed redundant extrasD['ActiveYN'] assignments from Blasts modules; framework now reads EleChoicesValues/Display from SettingsSchema
+- Fixed portal ActiveYN column width to use ELE_WIDTH_DROPDOWN_YES_NO constant
+- Redesigned Blasts schema: moved message content (Subject, BodyHTML, BodyPlain, FromName, FromEmail, ReplyTo) from Blasts to BlastsMessages
+- Made BlastsAttachments children of BlastsMessages only and dropped UUIDBlasts from BlastsAttachments
+- Dropped obsolete Blasts overview columns (TemplateYN, ContactsFilterJSON, ContactsViewName)
+- Renamed DataNames columns: MaleYN->MaleI, FemaleYN->FemaleI, FirstNameYN->FirstNameI, LastNameYN->LastNameI
+- Updated SettingsSchema metadata for renamed DataNames columns and cleaned up stale _Active/_NotActive view entries
+- Recreated _Active/_NotActive MySQL views only for tables with ActiveYN column
+- Added Add Contact and Add Contact View pickers to BlastsRecipientsMT for single and bulk recipient creation with duplicate prevention
+- Updated blasts-messages-smoke.spec.js for the new portal layout and contact picker
+- Moved PLAYWRIGHT_TESTING.md from xanApp/tests/docs/ to docs/
+- Moved temporary migration scripts and BUGFIX-blasts-delete-selector.md to z Archive
+- Untracked generated test artifacts: xanApp/tests/node_modules/, phpunit.phar, playwright-report/, test-logs/, disabled-tests-Imap-Sender.zip
+- Updated root and xanApp/tests/.gitignore to ignore generated test artifacts at the correct paths
+- PHPUnit: 448 passed
+- E2E: 37 passed
+
+2026-07-27 13:00:15
 
 - Redesigned Blasts schema: moved message content (Subject, BodyHTML, BodyPlain, FromName, FromEmail, ReplyTo) from Blasts to BlastsMessages
 - Dropped UUIDBlasts from BlastsAttachments; attachments are now children of BlastsMessages only
