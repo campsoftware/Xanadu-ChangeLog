@@ -14,6 +14,22 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log**
 
+2026-07-29 16:12 UTC
+- Fixed generator wildcard (*) and comma-delimited list parsing in do-check-schema-sse.php
+- Removed recursive table auto-discovery from do-generator.php; only explicitly entered modules are now generated
+- Preserved RelatedTablesA discovery for portal card generation in generated content-page.php
+- Added __ double-underscore qualifier stripping in xan.php modulesUpdate() UUID column mapping
+- Fixed xan-init.php CLI path resolution using `__DIR__` for internal require_once calls
+- Added FI_ADDRESSES alias, FI_BLASTSMESSAGESRECIPIENTS, and BUTTON_FI_WIDTH_ACTIONS_MENU constants
+- Added delivery counts (T/S/F) to BlastsRecipientsMT portal with bold T, green S, red F styling
+- Added delivery counts to BlastsMessagesMT portal; replaced DeliveredTS+OpenedTS with single Delivery counts column
+- Added delivery stats row to BlastsMT Overview card
+- Added latest error message display in BlastsRecipientsMT portal rows
+- Added accesskey="l" to column toggle button in page-resp.php
+- Changed doCommit.sh backup zip filename to timestamp-based naming
+- PHPUnit: 407 passed, 0 errors, 0 failures
+- E2E (Playwright): 9 passed, 1 expected failure (BlastsRecipientsMT portal row structure change)
+
 2026-07-27 17:19:00
 
 - Fixed modulesUpdate() and schemaUpdateColumns() in xanApp/xan/xan.php to only process BASE TABLE, excluding views from SettingsModules/SettingsSchema
