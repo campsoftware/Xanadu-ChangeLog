@@ -12,7 +12,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Try to use:** [ Found, Fixed, Updated, Moved, Added, Removed, Renamed, Replaced, Decided, Planning, NOTE ]
 
-**Change Log** · [2025](README_2025.md) · [Before 2025](README_Before_2025.md)
+**Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
 2026-08-02 20:09 UTC
 - Reordered BlastsMessagesMT detail cards: Status (with blast picker), Message (width 0200), Stats; removed System/Content/Delivery cards
