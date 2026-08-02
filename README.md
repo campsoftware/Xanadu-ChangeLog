@@ -12,7 +12,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Try to use:** [ Found, Fixed, Updated, Moved, Added, Removed, Renamed, Replaced, Decided, Planning, NOTE ]
 
-**Change Log**
+**Change Log** · [2025](README_2025.md) · [Before 2025](README_Before_2025.md)
 
 2026-08-02 20:09 UTC
 - Reordered BlastsMessagesMT detail cards: Status (with blast picker), Message (width 0200), Stats; removed System/Content/Delivery cards
@@ -1147,5 +1147,3 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 2026-02-19-15-03-52
 
 - Added dev-hal_merge.sh to automate merging dev-hal into main.
-
- [Before 2025](README_Before_2025.md)
