@@ -36,6 +36,10 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Stripped deprecated @covers annotations from 58 PHPUnit test files, converted @test to #[Test], removed @coversNothing and @backupGlobals
 - Added macOS `._*` artifact exclusions to phpunit.xml test suite definitions
 - PHPUnit: 448 passed, 872 assertions, 0 failures, 0 deprecations
+- Split README: moved 2025 entries to README_2025.md, added archive links under Change Log heading
+- Removed tests/vendor/ from git (1000+ extracted PHPUnit files; use phpunit.phar instead)
+- Removed tests/composer.json and tests/composer.lock from git
+- Updated tests/.gitignore to exclude vendor/, composer.json, composer.lock
 
 2026-07-29 16:12 UTC
 - Fixed generator wildcard (*) and comma-delimited list parsing in do-check-schema-sse.php
