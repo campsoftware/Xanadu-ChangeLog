@@ -14,6 +14,29 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log**
 
+2026-08-02 20:09 UTC
+- Reordered BlastsMessagesMT detail cards: Status (with blast picker), Message (width 0200), Stats; removed System/Content/Delivery cards
+- Fixed BlastsMessagesRecipientsMT portal with JOIN to BlastsRecipients using COLLATE utf8mb4_unicode_ci, showing Recipient, Subject, Status, Sent columns
+- Made +New and Actions buttons visible in BlastsMessagesRecipientsMT tab cards by removing `!$isTabCard` guards
+- Fixed BlastsMessagesMT cardPortal: removed broken LEFT JOIN on non-existent UUIDBlastsRecipients, shows Subject, Status, MessageType, SendAfterTS
+- Dropped and recreated BlastsMessages and BlastsMessagesRecipients tables with refactored schema (template + scheduling vs per-recipient send log)
+- Dropped TemplateYN from BlastsAttachments, reordered columns, set ModName to varchar(50)
+- Fixed BlastsRecipients column order: Mod columns now before FKs; narrowed ModName, NameFirst, NameLast to varchar(50)
+- Fixed app-wide DB column widths: Comms.Data 100→255, Users.EmailAddress/PhoneSMSEmail 50→255, Vendors.EmailMain 50→255, BlastsMessagesRecipients.IP 255→50
+- Fixed EventSource auth handling: return 401 Unauthorized with SSE error body instead of 307 redirect for unauthenticated SSE requests
+- Added client-side auth detection in xan.js.js: source.onerror and xanAutoLogoutCheck probe /xanDoParams and redirect to /logout on auth failure
+- Improved minifyAssets() logging: aligned colons, alpha order (CSS before JS), per-asset size info, styled header via __CSS__ prefix
+- Improved page-resp.php console output: total time and size for loaded resources, bold blue total line, xanInit timing in seconds format
+- Added tab persistence via localStorage: save and restore active tab per tab group on page load
+- Fixed eleTabs.php parent constructor call, added data-tabs-id, negative margins for flush inner cards, height styles for tab-content/tab-pane
+- Fixed eleModal.php: changed keypress to keydown, added preventDefault, fixed Enter/ESC handling, auto-hide modal after action
+- Fixed eleDateTimeDB.php flatpickr wrapper width 8rem→9rem to prevent AM/PM cutoff
+- Added strPadRight, strPadLeft, strPad helpers to functions-helpers.php
+- Fixed do-generator.php stray `";` parse error on line 1845
+- Stripped deprecated @covers annotations from 58 PHPUnit test files, converted @test to #[Test], removed @coversNothing and @backupGlobals
+- Added macOS `._*` artifact exclusions to phpunit.xml test suite definitions
+- PHPUnit: 448 passed, 872 assertions, 0 failures, 0 deprecations
+
 2026-07-29 16:12 UTC
 - Fixed generator wildcard (*) and comma-delimited list parsing in do-check-schema-sse.php
 - Removed recursive table auto-discovery from do-generator.php; only explicitly entered modules are now generated
