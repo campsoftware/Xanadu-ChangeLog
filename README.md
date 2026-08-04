@@ -14,6 +14,22 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-04 16:59 UTC
+- BlastsMessagesMT Message card converted to eleFlex layout with growing textareas (BodyHTML/BodyPlain stretch to fill card height)
+- BlastsMessagesMT Message card moved to first tab in tab card with isTabCard support (100% width/height, no resize margins)
+- BlastsRecipientsMT merged Status, Recipient, and Stats into single Status card with divider separators; removed System card
+- BlastsRecipientsMT wrapped Messages and Recipient Messages portal cards in tab card
+- BlastsMessagesRecipientsMT removed System card; merged Log fields (ErrorMessage, LogJSON, SMTPResponse, FailureCategory) into Delivery card
+- BlastsMessagesRecipientsMT removed Tracking card (TrackID, IP, UserAgent)
+- BlastsMessagesRecipientsMT Message card converted to eleFlex layout with growing textareas
+- BlastsAttachmentsMT added isTabCard parameter to cardPortal for tab card embedding
+- New xan/eleFlex.php: flexbox-based alternative to eleTable; supports fixed and grow row types; helper methods fixed() and grow() for rapid row construction
+- Framework TAGS_CELL_RTB fix: changed p-2 to pe-2 py-2 (removes left-side padding on right-aligned label cells)
+- Framework recCol_Input fix: removed display: inline-block !important for proper layout in flex containers
+- ContactsMT renamed Associations card to Connections; updated card method name and content-page call
+- Added FI_CONNECTIONS font icon constant and generated font assets
+- PHPUnit: 448 passed, 872 assertions, 0 failures, 0 errors
+
 2026-08-02 20:09 UTC
 - Reordered BlastsMessagesMT detail cards: Status (with blast picker), Message (width 0200), Stats; removed System/Content/Delivery cards
 - Fixed BlastsMessagesRecipientsMT portal with JOIN to BlastsRecipients using COLLATE utf8mb4_unicode_ci, showing Recipient, Subject, Status, Sent columns
