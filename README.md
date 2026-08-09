@@ -14,6 +14,26 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-09 19:33 UTC
+- Fixed BlastsMessagesMT cardRecordStatus broken $buttonHTML variable reference
+- Replaced non-existent BlastsMessages columns (SentTS/DeliveredTS/OpenedTS/ClickedTS) with actual columns (SendAfterTS/SendBeginTS/SendEndTS)
+- Rewrote BlastsMessagesMT doGenerateRecipients to store EmailTo/NameFirst/NameLast on BlastsMessagesRecipients per recipient
+- Rewrote BlastsMessagesMT doSendBlast to use \xan\sender()->sendEmail() via PHPMailer/Mailgun with whitelist (@campsoftware.com and hal@mac.com)
+- Added migration 2026-08-03-blasts-add-email-columns.php adding EmailTo/NameFirst/NameLast to BlastsMessagesRecipients
+- Fixed ContactsMT ActiveYN display label from 'ActiveYN' to 'Active'
+- Added ContactsMT recCol_BucketButtons method for file upload bucket buttons
+- Added ModTS cache-busting query parameter to ContactsMT bucket image URLs
+- Fixed upload.php to use $_POST directly instead of postRaw() for fileKey/fileTypes params
+- Removed stale setTimeout script injection from eleEmbed.php non-image embed rendering
+- Fixed module.php list item image rendering to use correct idListItem instead of idPrefix
+- Added defensive null checks in xan.js.js xanFileBucketSpinner and xanFileBucketSuccess to prevent crashes when bucket elements are missing
+- Rewrote contacts-crud-safe.spec.js, contacts-crud.spec.js, and foos-crud.spec.js to UUID-tracked creation/deletion to prevent accidental deletion of existing records
+- Changed contacts list navigation from /contacts/ to /contacts/view/ in contact-load.spec.js, contacts-crud-safe.spec.js, contacts-crud.spec.js, and contacts-portal-test.spec.js to avoid pathLast redirect
+- Added blasts-email-send.spec.js E2E test for blast message generation and sending flow
+- Restored Hal Gumbert contact record (F30BB9DD-DE9A-4F13-91B1-79BA4A776585) from August 2023 SQL dump after accidental deletion by unsafe test
+- PHPUnit: server hang prevented completion (last run: 448 passed, 0 failures)
+- E2E (Playwright): 34 passed, 3 failed (Blasts portal assertion, email send timeout, Add Contact modal visibility)
+
 2026-08-04 16:59 UTC
 - BlastsMessagesMT Message card converted to eleFlex layout with growing textareas (BodyHTML/BodyPlain stretch to fill card height)
 - BlastsMessagesMT Message card moved to first tab in tab card with isTabCard support (100% width/height, no resize margins)
