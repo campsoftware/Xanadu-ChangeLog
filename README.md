@@ -14,6 +14,15 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-13 22:08 UTC
+
+- Rewrote blasts-crud-full.spec.js with UUID tracking and UI-based cleanup (Actions → Delete) to prevent test blast accumulation
+- Rewrote blasts-messages-smoke.spec.js with UUID tracking and UI-based cleanup
+- Rewrote blasts-email-send.spec.js with UUID tracking and UI-based cleanup
+- Fixed blasts-crud-full duplicate step to handle list-page refresh (Blasts duplicate refreshes in place rather than navigating to detail)
+- Cleaned up 38 orphaned test blasts created by previous test runs without cleanup
+- Blasts count restored to 1 (original production record from Aug 9)
+
 2026-08-13 21:25 UTC
 
 - Added `xanCheckboxToggleAll()` function in `xan.js.js` for shift-click checkbox toggling across list and portal views
