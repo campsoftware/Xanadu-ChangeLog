@@ -14,6 +14,22 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-16 18:55 UTC
+
+- Added ErrorYN column to BlastsMessagesRecipients with ARRAY_YESNO choices
+- Added SettingsSchema row for BlastsMessagesRecipients.ErrorYN
+- Auto-set ErrorYN=Yes in BlastsMessagesRecipientsMT::recMassage when ErrorMessage is not empty
+- Recolored ErrorYN in recColFormattingTags (red=Yes/error, green=No)
+- Reorganized BlastsMessagesRecipientsMT detail page into 5 cards: Connections, Status, Message Info, Body HTML, Body Plain
+- Merged Delivery + Error + Tracking into single Status card with dividers
+- Split BodyHTML and BodyPlain into separate cards (CARD_WIDTH_0200 each)
+- Updated BlastsRecipientsMT content-page to remove tabs and show Recipient Messages portal directly
+- Rewrote BlastsMessagesRecipientsMT cardPortal as multiline with CARD_WIDTH_0300
+- Portal now joins Blasts and BlastsMessages for BlastName and BMSubject columns
+- Portal sort: ErrorYN DESC, SentTS DESC (errors float to top)
+- Portal columns: GTRR, Recipient, Blast, Message, Status, Error, Error Message, Sent
+- Added migration: 2026-08-16-blasts-messages-recipients-add-error-yn.php
+
 2026-08-16 18:25 UTC
 
 - Added ARRAY_BLASTS_TYPE constant to constants-arrays.php with option 'Email'
