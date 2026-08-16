@@ -14,6 +14,28 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-16 18:25 UTC
+
+- Added ARRAY_BLASTS_TYPE constant to constants-arrays.php with option 'Email'
+- Updated Blasts.Type SettingsSchema row to use ARRAY_BLASTS_TYPE for EleChoicesValues and EleChoicesDisplay
+- Added default Type = 'Email' in BlastsMT::recMassage when Type is empty
+- Blasts Type column now renders as eleSelect dropdown with Email option
+
+2026-08-16 18:15 UTC
+
+- Commented out Recipient Messages tab on Blasts detail page
+- Blasts detail now shows only Messages and Recipients tabs
+
+2026-08-16 18:10 UTC
+
+- Merged BlastsMessages Status and Connections cards into single Status card
+- Blast picker (UUIDBlasts) moved to top of Status card
+- Removed bogus UUIDBlastsRecipients picker from Status card - column does not exist on BlastsMessages table
+- Removed BlastsRecipients_Active and BlastsRecipients_NotActive SQL views (no ActiveYN column in BlastsRecipients)
+- Dropped orphaned SettingsSchema/SettingsModules rows for removed views
+- Added migration: 2026-08-16-drop-blasts-recipients-views.php
+- BlastsMessages Status card width already set to CARD_WIDTH_0100
+
 2026-08-16 18:00 UTC
 
 - Fixed BlastsMessages Connections card UUIDBlastsRecipients label showing raw column name instead of "Recipient"
