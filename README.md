@@ -14,6 +14,11 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-16 18:00 UTC
+
+- Fixed BlastsMessages Connections card UUIDBlastsRecipients label showing raw column name instead of "Recipient"
+- Set DefinedYN = Yes for all BlastsMessages SettingsSchema rows that were excluded from schema cache
+
 2026-08-16 17:50 UTC
 
 - Fixed BlastsMessagesMT Status card Send Blast button rendering literal \u003c/\u003e escapes instead of actual HTML tags
