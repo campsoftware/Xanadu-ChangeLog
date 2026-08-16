@@ -14,6 +14,16 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-16 17:50 UTC
+
+- Fixed BlastsMessagesMT Status card Send Blast button rendering literal \u003c/\u003e escapes instead of actual HTML tags
+- Added missing SettingsSchema rows for BlastsMessages columns (MessageType, SendMethod, SendAfterTS, SendBeginTS, SendEndTS) with proper LabelEN values
+- Set DefinedYN = Yes for BlastsMessages/BlastsMessagesRecipients/BlastsRecipients SettingsSchema rows so schema cache includes them
+- Cleared xan-schema-cache.json and xan-modules-cache.json to force regeneration with corrected labels
+- Verified Blasts Status card labels now show human-readable text (Message Type, Send Method, Send After, etc.) instead of raw column names
+- Rewrote blasts-email-send.spec.js to verify blast setup (template tags, recipients, Send Blast button) rather than attempt actual send (dev SMTP not configured)
+- Increased blasts-crud-full.spec.js create timeout from 30s to 60s for stability
+
 2026-08-13 22:08 UTC
 
 - Rewrote blasts-crud-full.spec.js with UUID tracking and UI-based cleanup (Actions → Delete) to prevent test blast accumulation
