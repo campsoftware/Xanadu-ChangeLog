@@ -14,6 +14,30 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-08-17 19:45 UTC
+
+- Removed SendMethod column from BlastsMessages table and all code references
+- Removed Status and LastSentTS columns from BlastsRecipients table and all code references
+- Removed SendAfterTS from BlastsMessages portal header
+- Added ARRAY_BLASTSMESSAGES_MESSAGETYPE constant to constants-arrays.php
+- Fixed BlastsMessages.MessageType SettingsSchema to use ELE_TYPE_SELECT_DB with ARRAY_BLASTSMESSAGES_MESSAGETYPE
+- Removed SendMethod field from BlastsMessagesMT::cardRecordStatus detail card
+- Refactored BlastsRecipientsMT portal from nested eleTable to flat eleTable with aligned columns
+- Refactored BlastsMessagesMT portal from nested eleTable to flat eleTable with aligned columns
+- Added EmailTo column to BlastsRecipients portal
+- Added Delivery counts (T/S/F) with inline error display to BlastsRecipients portal
+- Fixed AddContactView SQL to fetch email from Comms table instead of nonexistent Contacts.EmailTo
+- Fixed single contact picker to fetch email from Comms table before adding recipient
+- Reordered BlastsRecipients portal header: single contact picker left of contact view dropdown
+- Commented out New Record (+) button on BlastsRecipients portal
+- Fixed BlastsMessagesMT action buttons to use eleButton instead of raw HTML anchor tags
+- Fixed portal index/checkbox side-by-side layout across ~45 module class.php files (removed HTM_BR)
+- Fixed portal vertical alignment: header and data cells use LM/RM tags instead of LT/RT
+- Fixed stale session sort crash by adding Type to defensive reset in module.php::cardListSearchQueryInit
+- Fixed xan.js minification to properly resolve {php:...} constant tags
+- Removed temp files: get_blasts_cols.php, cleanup-test-contacts.sql, 3 temp migrations
+- PHPUnit: 407 tests, 661 assertions, all passed
+
 2026-08-16 18:55 UTC
 
 - Added ErrorYN column to BlastsMessagesRecipients with ARRAY_YESNO choices
@@ -28,7 +52,6 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Portal now joins Blasts and BlastsMessages for BlastName and BMSubject columns
 - Portal sort: ErrorYN DESC, SentTS DESC (errors float to top)
 - Portal columns: GTRR, Recipient, Blast, Message, Status, Error, Error Message, Sent
-- Added migration: 2026-08-16-blasts-messages-recipients-add-error-yn.php
 
 2026-08-16 18:25 UTC
 
@@ -49,7 +72,6 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Removed bogus UUIDBlastsRecipients picker from Status card - column does not exist on BlastsMessages table
 - Removed BlastsRecipients_Active and BlastsRecipients_NotActive SQL views (no ActiveYN column in BlastsRecipients)
 - Dropped orphaned SettingsSchema/SettingsModules rows for removed views
-- Added migration: 2026-08-16-drop-blasts-recipients-views.php
 - BlastsMessages Status card width already set to CARD_WIDTH_0100
 
 2026-08-16 18:00 UTC
