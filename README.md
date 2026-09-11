@@ -14,6 +14,45 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-09-11 18:36 UTC
+
+- Removed BlastsMessagesRecipientsMT module (6 files); BlastsRecipients is now the single recipient table
+- Renamed xanTemplate base table from BlastsMessagesRecipients to BlastsRecipients
+- Added BlastsMessagesMT methods mergeTemplateForRecipient and recColFormat
+- Replaced BlastsMessagesMT Message tab with Body HTML and Body Plain tabs
+- Removed BlastsMessagesMT cards cardRecordMessage, cardRecordConnections, cardRecordContent, cardRecordDelivery, cardRecordStats
+- Added BlastsMessagesMT cards cardRecordBodyHTML, cardRecordBodyPlain, cardRecordPreview
+- Added BlastsMessagesMT do.php actions PauseBlast and ResumeBlast
+- Added attempts count and ContactsView to the Blasts detail card
+- Moved BlastsRecipientsMT do.php actions ContactsSearch, AddContact and AddContactView into class methods doAddContactsFromView, doAddContactPicker and doRetryRecipient
+- Added BlastsRecipientsMT detail cards cardRecordConnections, cardRecordStatus, cardRecordError, cardRecordMessage, cardRecordBodyHTML, cardRecordBodyPlain and cardRecordLog
+- Added showPreviewButton option to BlastsRecipientsMT cardPortal and moved the preview button to its own column aligned with the GTRR button
+- Refactored BlastsMT and BlastsMessagesMT content-page.php from tabs to stacked cards
+- Refactored BlastsRecipientsMT content-page.php to use the new detail cards
+- Added ARRAY_BLASTSMESSAGES_STATUS constant to constants-arrays.php
+- Added ARRAY_BLASTS_VIEWNAME_VALUES and ARRAY_BLASTS_VIEWNAME_DISPLAY constants with backward compatible ARRAY_BLASTS_CONTACTSVIEW_VALUES and ARRAY_BLASTS_CONTACTSVIEW_DISPLAY aliases
+- Fixed AddressesMT::tableSelectAsAppend missing second NULLIF argument that broke the Addresses merge query
+- Added xanTemplate Pass 1b to drop empty li elements left behind when section tags are authored inside list items
+- Added xanTemplate resolveSection row skip when all merge tags resolve to empty
+- Added xanTemplate childTableOrderBy for Comms and Addresses ordering
+- Added xanTemplate tableSelectAsAppend dispatcher so merged child tables receive their module computed columns
+- Updated xanTemplate section regex to accept both {{/Relation}} and {{/Table.Relation}} closing tags
+- Refactored xanTemplate loadChildren, loadCached and relationsLoad to use recsGetPDO instead of raw PDO
+- Added FI_GROUP, FI_MERGE, FI_CODE_MERGE, FI_BINOCULARS, FI_WARNING, FI_SEND, FI_PLAY and FI_PAUSE icon constants
+- Added SVG sources binoculars, code-merge, layer-group, merge, pause, play, send and warning and rebuilt xanFont
+- Removed legacy iconFont and iconFontFA files (8 files); xanFont is the single icon font
+- Added CSS to enlarge font icons inside btn elements
+- Added eleTextWYSIWYG element for TinyMCE powered rich text input
+- Added xanTinyMCEInit.js and xanTinyMCEMergeTags.js for TinyMCE 7.8.0 editing with a merge tag dropdown
+- Added TinyMCE 7.8.0 and xanTinyMCEInit.js to templates page-resp.php
+- Added xan-tinymce CSS so the editor fills tab cards
+- Simplified eleString constructor to value plus tags and reduced render to no arguments
+- Updated xanCardExpand to accept event and read event.altKey; replaced php FI message icons with literal emoji in xan.js.js
+- Removed xanApp/migrations one-off scripts (18 files) and generationLog.txt generator artifacts (7 files)
+- Updated .gitignore to exclude xanApp/migrations and app generationLog.txt
+- PHPUnit: 448 tests, 872 assertions, all passed
+- E2E (Playwright): 31 passed, 5 failed, 2 skipped
+
 2026-08-17 19:45 UTC
 
 - Removed SendMethod column from BlastsMessages table and all code references
