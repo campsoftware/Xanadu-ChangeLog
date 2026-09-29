@@ -14,6 +14,63 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-09-29 18:03 UTC
+
+- Added RECS_CURRENT_TIMESTAMP sentinel so whitelisted columns (module colNamesSQLExpressionA, default ModMassagedTS) emit CURRENT_TIMESTAMP unbound instead of a bound parameter
+- Added recs properties rowsMassagedD, colsLoadedA, isRead, nameTableView, includeVC and includeSC and extended the recs constructor with optional nameTableView, includeVC and includeSC arguments
+- Added recs methods tableNameRead, isStale and recordUpdateRowsD, and refactored recordUpdate to delegate its write to recordUpdateRowsD
+- Refactored recs INSERT and UPDATE builders to skip virtual and generated columns so MySQL no longer rejects a DB-generated value
+- Added DBS_IS_VIRTUAL constant and eleMeta virtualYN; virtual columns now render read-only like generated columns
+- Updated module recMassageDefaultsYN to auto-detect every ARRAY_YESNO column and to default only columns that were actually loaded
+- Added module recMassageNormalize as the single entry point for default and normalization steps
+- Added module recMassageWriteBack so a read-path recMassage persists only loaded massaged columns and stamps ModMassagedTS with the database clock
+- Added read-path recMassage in recs queryModule so SELECT results are massaged once, honoring includeVC, includeSC and isStale
+- Updated module list reads to be view-aware with virtual calcs disabled
+- Updated module tableMassageAll to skip generated columns in its UPDATE pass
+- Updated xan schema refresh to read GENERATION_EXPRESSION and derive VirtualYN and GeneratedYN separately
+- Added xan schemaTriggeredColsA, scanning information_schema TRIGGERS and ROUTINES to mark TriggeredYN
+- Updated SettingsSchema upsert and reset to carry the new VirtualYN and TriggeredYN columns
+- Added xanTemplate pass 1c for bare-name tags: {{APP_*}} constants resolve, TrackingID aliases BlastsRecipients::TrackID, anything else fails loud
+- Added xanTemplate block on {{Settings::Field}} tags, redirecting to the APP_* constant form instead of returning a same-named merge column
+- Added xanTemplate unresolved(), rendering [[?tag]] and logging the reason once per tag
+- Added xanTemplate rowsMassageOnRead so child and related template rows are massaged through their module
+- Added xanApp/content.php, the public tracked content endpoint /content/{TrackID}/{file} that serves a real image, logs a Loaded line on the recipient, refuses traversal and sends no-store headers
+- Added PATH_ROOT_CONTENT and the xanApp/content folder with a README for letter artwork
+- Added a content route in router.php and skipped LogEvent for /content/ so a mail open is not duplicated
+- Added BlastsRecipientsMT trackIDEnsureForRow and trackIDMint to mint an open-tracking token on demand
+- Added BlastsRecipientsMT logAppend with a 60KB size guard writing newest-first JSON entries
+- Added BlastsRecipientsMT ErrorYN recalculation from ErrorMessage
+- Replaced the 1x1 tracking pixel with a real /content/{{TrackingID}}/logo1024.png image in xanTinyMCEInit.js
+- Added BlastsMessagesMT mergeTagsJSONForBlasts for the Body HTML merge tag dropdown
+- Added BlastsMessagesMT preview body type so Preview can show the resolved HTML or Plain body
+- Fixed BlastsMessagesMT mergeTemplateForRecipient inventing a body by copying content from any site with a matching UUID
+- Added TrackID stamping and per-recipient Log entries on blast send success and failure
+- Fixed BlastsMessagesMT/do.php PreviewRecipient swallowing merge errors; it now logs and reports them
+- Fixed ContactsMT/do-print-form.php broken $resp->jsHTMLSet() and $resp->jsActionsJSON() calls
+- Fixed folderFork/setup.php unterminated if ($message) opening tag
+- Fixed functions-files-paths.php fileReadReverse throwing on a missing legacy log file; it now returns '' when unreadable
+- Updated xan.js.js so jsHTMLSet to the absent #xanMessage selector routes to xanMessageDisplay instead of being dropped
+- Updated xan.js.js xanDoSave to URL-encode eleID, eleVal, eleLabel, eleTable and eleInsert
+- Added xanTinyMCEInit.js native-paste input listener with debounce, and an init baseline so pasted content saves while untouched content does not
+- Refactored xanTinyMCEInit.js change and blur handling into one idempotent xanSyncToTextarea
+- Refactored recMassage in every app module into SC (Normalize, Defaults, Lookups, Stored Calcs, Update) and VC (Virtual Calcs) blocks gated on includeSC, includeVC and isStale
+- Added virtual calcs AddressesMT AsLineVC, ContactsMT NameFullVC and CommsMT CommsAsLineVC with commsAsLine
+- Removed ContactsMT tableSelectAsAppend FullName CONCAT_WS now that recMassage computes FullName
+- Updated ContactsMT list ordering to ActiveYN DESC before PinnedYN
+- Updated doCommit.sh to derive the repo root, branches and message path from the .env files instead of hardcoded paths
+- Updated doTests.sh to self-configure from .env, add the orphan audit baseline guard, and fail when PHPUnit or Playwright produce no trustworthy counts
+- Added xanApp/tools/ops/orphan-audit.sh
+- Added xanApp/tests/Unit/xan/TemplateTagsTest.php covering bare-name tags, fail-loud unresolved tags and secret non-exposure
+- Updated xanApp/tests/Unit/xan/RecsTest.php for the four-argument recs constructor and recordUpdateRowsD
+- Added xanApp/tests/e2e/blastsTestUtils.js shared helpers whose cleanup throws when records survive
+- Updated the Blasts, Contacts and Foos E2E specs to use the shared cleanup and to assert every created row is listed before deletion
+- Updated XanLabsM/do-generator.php to keep only the newest _BU_ backup and to log a missing required marker
+- Added OPS_SERVER, OPS_SSH_KEY, OPS_REMOTE, OPS_DEV_BRANCH and OPS_MAIN_BRANCH placeholders to xanApp/.env.foo.xanweb.app
+- Updated .gitignore to ignore xanApp/xan/cmdDo.log and cmdDoPermissions.log
+- Removed xanApp/xan/cmdDo.log from the repo
+- PHPUnit: 457 tests, 888 assertions, all passed
+- E2E (Playwright): 35 passed, 0 failed, 3 skipped (of 38)
+
 2026-09-11 18:36 UTC
 
 - Removed BlastsMessagesRecipientsMT module (6 files); BlastsRecipients is now the single recipient table
