@@ -14,6 +14,47 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
 
+2026-10-09 18:23 UTC
+
+- Added the \xan\ai transport layer: aiClient (chat and chatStream), aiProvider, aiProviderRegistry, aiPriceTable and aiResult, over injectable HTTP seams (aiHttpInterface/aiHttpCurl, aiHttpGetInterface/aiHttpGetCurl, aiHttpStreamInterface/aiHttpStreamCurl) so the suite needs neither network nor key
+- Added the AI exception hierarchy: aiException with Transport, HttpStatus, MalformedResponse, Refusal, Truncation, Tool and Connection subclasses, and aiClient::providerErrorMessage so a provider error carries the provider's own words instead of a bare status
+- Added the constants-xan.php AI block: AI_PROVIDERS_JSON, AI_PROVIDER_NAME/BASE_URL/MODEL/KEY, AI_TIMEOUT_SECONDS, AI_CONNECT_TIMEOUT_SECONDS, AI_RETRY_MAX_ATTEMPTS and AI_RETRY_BACKOFF_MS, each read from the Settings row with a working default so a site whose row predates them still boots
+- Added HomeM cardAITest, aiResultHTML and app/HomeM/do-ai-test.php: a request/response card showing provider, model, the exact request body, the raw response, usage, cost and elapsed time, with a provider picker and a Send to All Providers comparison
+- Added HomeM cardAIChat and app/HomeM/do-ai-chat-sse.php: a streaming chatbot over the framework's own xanDoProgressInit SSE, tool turns non-streamed and the final answer streamed, failing as an error event rather than as a confident wrong answer
+- Added the Phase 3 data sources: aiTool, aiToolRegistry, aiToolSet, aiToolExecutor and aiToolResult with named typed tools under iteration, row and time caps; aiSQLGuard for SELECT-only SQL; aiSqlSource and aiConnection over a separate SELECT-only AI_DB_* credential; aiFileSource confined to AI_FILE_ROOT; aiWebFetcher behind an allowlist that re-checks the resolved address; and aiAudit
+- Added aiToolSet::assertCompositionAllowed, which refuses to offer a read tool beside an outbound fetch tool unless the site sets AI_ALLOW_READ_WITH_EGRESS, so the exfiltration pairing is decided before the run rather than asked of the model
+- Added the aiTest and aiChat cases to app/HomeM/do.php and both cards to app/HomeM/content-page.php
+- Added 15 AI unit test files under tests/Unit/xan (AiClientTest, AiClientStreamTest, AiToolExecutorTest, AiToolSetTest, AiSQLGuardTest, AiWebFetcherTest, AiWebAllowlistTest, AiConnectionTest, AiPriceTableTest, AiProviderTest, AiProviderRegistryTest, AiSqlSourceTest, AiFileSourceTest, AiToolTest, AiHomeTestCardTest) with the matching AI requires in tests/bootstrap.php
+- Fixed the streaming chat card splitting a non-tool answer with str_split, which counts bytes and can cut a multi-byte character in half and blank the SSE frame; it now uses mb_str_split, and the future-compat checker no longer reads str_split() as a bare split() call
+- Removed the deprecated curl_close() call from aiHttpCurl, aiHttpGetCurl and aiHttpStreamCurl: a no-op since PHP 8.0, deprecated in 8.5, and a log line per AI call and per retry
+- Updated the two AI app scripts to resolve \xan\ai through a guarded PATH_ROOT_XAN with a relative fallback, so they resolve standalone as well as under the app bootstrap
+- Added the Blasts Test Mode safety layer: EMAIL_SIMULATION_DOMAIN over Settings.EmailSimulationDomain with a campsoftware.com fallback, BLAST_SEND_LIVE, ARRAY_BLAST_SEND_TEST_DOMAINS, ARRAY_BLAST_SEND_TEST_EMAILS, emailSimulationAddress, emailTestAddress, emailIsSimulationAddress and blastEmailAllowedToSend
+- Added BlastsRecipients.EmailToTest, written by doGenerateRecipients through emailTestAddress and shown on the recipient portal, so a test send lands in one readable mailbox while the intended address stays visible
+- Added BlastsMessagesMT doMergeThisMessage, doSendThisMessage, doSetTestMode and doResetTest, each with its own confirmation stating the totals it affects, and wired them in BlastsMessagesMT/do.php
+- Added the T/A/S/F delivery counts as a single definition (SQL_BLAST_SENT_COUNT, SQL_BLAST_FAILED_COUNT, blastStatusIsSent, blastCountsTooltip) shared by the message card, the Blasts portal and the recipient portal, counting a Test Mode send as sent
+- Added sender::sendEmailHTML, which sends authored HTML without nl2br(), carries a From display name and any number of attachments, and reports success so a batch caller keeps going past one bad address
+- Added cardRecordModals to BlastsMessagesMT so the four action confirmations are defined once, and raised row 1 to 65rem so the worst-case send verdict fits
+- Added the Blast Test Mode Email Domain field and its explanatory note to the Settings SMTP card
+- Added a red TEST MODE badge to the message card and to each recipient row
+- Fixed doRetryRecipient building PHPMailer directly, which fataled with Class not found because nothing had loaded PHPMailer; it now sends through \xan\sender
+- Fixed the recipient generation query reading Comms.CommsType, a column that does not exist, which errored and left every recipient with a blank EmailTo; it now reads Comms.Type, skips an empty Data value and breaks ties on ModTSCreated
+- Fixed emailAddressIsValid returning emailAddressIsNotValid()'s answer, so it reported an invalid address as valid
+- Fixed xanDoProgressMsg never extending the session on a long operation: the completion test required a literal xanDo_ prefix while xan.js.js sends a timestamp key, so it is now gated on the closing flag
+- Fixed a fatal in the file loggers: DateTime::createFromFormat('U.u', microtime(true)) returned false once the float lost its microsecond digits; added dateTimeNowMicro() and used it in logEventToFile, logAuditToFile and logMemoryToFile
+- Fixed eleTabs::__construct passing $id and $name to element::__construct(), which takes no arguments, so idValue stayed empty and data-tabs-id rendered blank
+- Fixed index.php and appResponse::returnResponse() emitting headers after the SSE endpoints had already flushed, which warned Cannot modify header information
+- Fixed the login and password-reset content pages reading an undefined $mmTable that nothing in their require chain sets
+- Fixed logout calling session_destroy() on a session router-logins.php had already terminated
+- Fixed the print defaults in CalendarEventsMT/do-print.php and ProjectsMT/do-print.php, which built the document from undefined $headerContent, $bodyContent and $headerMarginTop when a record had no rows
+- Fixed watch.php missing the app bootstrap chain, so its app::request() call threw App not initialized
+- Removed the per-message debug logging from xanDoProgressMsg, which wrote two lines for every progress message, i.e. two per recipient on a blast
+- Removed the brittle blasts-email-send.spec.js, which no longer asserted a send path
+- Updated xanFont build.js to reproduce the whole xanFont.css (the font version query, the hand-maintained .btn icon block and the FA6 name aliases) instead of appending and losing them, and added the .xan-paper-plane and .xan-triangle-exclamation aliases
+- Updated .gitignore to ignore doCommitMessage.txt, xanApp/doCommitMessage.txt and /.jj/, and removed both doCommitMessage.txt files from the repository
+- Added blast send-gate and simulation-address tests to FunctionsInternetTest
+- PHPUnit: 461 tests on dev001, all passed; AI suite 141 tests, 310 assertions, all passed locally
+- E2E (Playwright): 35 passed, 0 failed, 1 skipped (of 36)
+
 2026-09-29 18:03 UTC
 
 - Added RECS_CURRENT_TIMESTAMP sentinel so whitelisted columns (module colNamesSQLExpressionA, default ModMassagedTS) emit CURRENT_TIMESTAMP unbound instead of a bound parameter
