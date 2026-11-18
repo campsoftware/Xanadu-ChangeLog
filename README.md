@@ -10,9 +10,244 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 # Xanadu Pro Change Log
 
-**Try to use:** [ Found, Fixed, Updated, Moved, Added, Removed, Renamed, Replaced, Decided, Planning, NOTE ]
+**Try to use:** [ Found, Fixed, Updated, Moved, Added, Removed, Renamed, Replaced, Decided, Planning, Refactored, NOTE ]
 
 **Change Log** · [2025](README_2025.md) · [2024](README_2024.md) · [2023](README_2023.md) · [2022](README_2022.md) · [2021](README_2021.md)
+
+2026-11-18 16:22 UTC
+
+- Added docs/blasts-send.md: blastSend's entry points, its two invariants (candidatesPredicate is built from SEND_STATUSES_A so the SQL a send runs and the per-row check a dry run reports cannot disagree, and SEND_ATTEMPTS_MAX is the cap rather than a literal 10 at the call site), the fact that nothing in this tree calls the class, and the three points where it disagrees with the live doSendBlast() - 'Simulated' sendability, the address whitelist, and where the retry cap is defined
+- Fixed blastSend.php's header, which cited six symbols that exist only in the SCCA fork (doDryRunBlast, tools/blast-dry-run.php, cardRecordSending, scopeSelect, BlastAddressCleanSitesTest, BlastSendBoundaryTest) and named another site's database as if it were this one; it now says ported-but-unwired and points at the note
+- Decided not to rewire doSendBlast() in this tree: 'Simulated' sendability and the whitelist change who receives mail, and no send can be executed here to prove a rewiring - wiring waits for one message to go to a test address and its recipient log be read back
+- Added the 153-bullet change log to README.md covering every commit since 2026-10-23 23:30, one bullet per commit under a dated heading, with each bullet's date assigned from git log rather than from the drafting pass that got seven of them wrong
+- Fixed the E2E contact-load test asserting on page.locator("body").textContent(), which returns the page's own script source, so the framework's inline console.log('Error', error) matched a "does not contain Error" check and reported a failure on a list that had rendered perfectly; it reads innerText() now, and the FATAL check is unchanged
+- Added the local test command and the include-tree requirement to docs/commit-discipline.md and the same note to tests/bootstrap.php: a PATH_ROOT_INCLUDE fallback to this tree's own include/ was tried and cannot work, because the tree carries four vendor directories against a deployed install's forty and xan-init.php requires several of them unconditionally, so the fallback only moves the failure one require further on - 4997f51b's message claiming that fallback exists was not true
+- Updated mem-117 and mem-070: local commits are not pre-approved, and there is no local-only category in these repos because xandev's origin is GitHub, so every git write needs an explicit yes
+- Deployed the 13 commits to dev001: 12 code files and 11 test files installed www-data:www-data 644, every code file md5-matched to local, backed up first to /home/admin/xan-backups/xandev-20261118/pre-deploy.tgz, with app/FoosMT deliberately excluded because the server's copy is newer than the repo's
+- Updated the dev001 smoke check: /login/ 200, /blasts-messages/view/ 200, /, /home/ and /contacts/view/ 307 to login, no 5xx
+- PHPUnit: 748 tests, all 748 passed on dev001 (714 unit locally, 1,597 assertions, 0 failures, 4 skipped)
+- E2E (Playwright): 39 passed, 0 failed, 2 skipped (of 41)
+
+2026-11-18 16:16 UTC
+
+- Fixed the E2E contact-load test asserting on `page.locator("body").textContent()`, which returns the page's own `<script>` source, so the framework's inline `console.log('Error', error)` matched the "does not contain Error" check and reported a failure on a list that had rendered perfectly - the check reads `innerText()` now, with a comment saying why, and the FATAL check is unchanged
+- Added the local test command and the reason it needs an include tree to `docs/commit-discipline.md`, and recorded the same in `tests/bootstrap.php`: a `PATH_ROOT_INCLUDE` fallback to this tree's own `include/` was tried on 2026-11-18 and cannot work, because the tree carries four vendor directories against a deployed install's forty and `xan-init.php` requires several of them unconditionally - the fallback only moves the failure one `require` further on, and 4997f51b's message claiming that fallback exists was not true
+- PHPUnit: 714 tests, 1,597 assertions, 0 failures, 4 skipped locally (PATH_ROOT_INCLUDE pointing at a complete include tree); `doTests.sh` on dev001 reports 698 of 698 PHPUnit and 38 passed / 1 failed / 2 skipped Playwright, that one failure being the assertion fixed above
+
+2026-11-17 18:38 UTC
+
+- Added `colInSchemaIs()`, `colValueDifferentIs()` and `colOnlyBookkeepingIs()` so write paths can ask the schema whether a name is a real column (virtual calcs are display values MySQL rejects), whether a value actually changed (the old `!== ... ?? ''` had `??` as dead code and raised "Undefined array key" on every save), and whether a row holds anything but the Mod* stamps (a 0-row change read as failure meant ten retries then a 500 on a save that had succeeded)
+- Fixed `recordInsert()` and `recordUpdate()` massaging with `includeVC` at the caller's default and then writing every column, and `doSave.php` building its own UPDATE with the same hole, so Contact Create and contact/address edits sent virtual calcs to MySQL and got a 500 with nothing written; the recs writes now turn `includeVC` off, `doSave` drops columns the schema does not know, and "0 rows changed" is no longer treated as failure
+- Fixed the router rendering the whole home page for an authenticated HEAD, which `xan.js` sends only to probe the session, spending 3.5 s and 450 KB while holding the PHP file-session lock so the user's next `POST /xanDoSave` queued behind its own auth probe (save 4.36 s wall instead of 1.06 s); HEAD now answers in 0.039 s, and unauthenticated HEAD still gets its redirect
+- Fixed `xanInit()` binding `.xanDoSave` once against the inputs present at page load, which missed every input a card portal re-applies through `jsHTMLSet( '#<card>_Body', ... )` so typed values silently reverted with no request and no error ("Addresses is not saving input"); the handler is now delegated and namespaced so it covers elements created later
+- Fixed the list select cell so a click a few pixels off the checkbox no longer lands on the cell, bubbles to the clickable row and opens a different record (which read as "the page reloaded"); the cell now carries `xanRowSelect` and the row's onclick returns early for a click starting there or on any input, button, link, label, select or textarea
+- Added `textStraightenQuotes()` and its single shared table `textStraightenQuotesPairs()` to fold the four ways a quotation mark or no-break space reaches a name field (U+0027, U+2018, U+2019) to ASCII for a named set of kinds, since search, export grouping and dedupe each saw a different name for what is indistinguishable on screen and the U+2019 form was reported as dark block glyphs; idempotent, and deliberately not a general sanitiser
+- Fixed the plain part of a message showing literal entities such as `&#039;` for an apostrophe, by decoding at `textBodyPlain` where both the HTML and plain parts ship from so neither can be fixed without the other
+- Added `blastSend` with `planForMessage()`, `planRecipient()`, `sendCoversFacts()`, `candidatesPredicate()`/`candidatesWhere()`, `guardDecision()` and `blastAddressUsable()` ported from the SCCA fork, but nothing in this tree calls it - `BlastsMessagesMT::doSendBlast()` still carries its own inline path, and the two disagree on whether a 'Simulated' row is sendable, on the address whitelist and on where the retry cap is defined
+- Fixed the `BlastsRecipients.Log` textarea being editable in Edit mode, where one stray keystroke could rewrite the JSON record that proves a letter went out and Save would keep it; `logColTags()` states the rule as a plain array (readonly plus monospace) so it can be asserted without a module instance, and the formatting hook applies it to the Log column only
+- Fixed three faults in the recipient portal: a row with no address now shows 'NO EMAIL ADDRESS' in red instead of looking ready, Test Mode resolves from whichever parent key rendered the portal so rows from the Blast page stop claiming real sends, and the test address is printed in red in Test Mode only rather than grey in both; unsendable rows also sort first
+- Fixed Regenerate being refused whenever the Blast had no Contacts View, since every recipient row stores the `UUIDContacts` it came from; `blastContactsViewMode()` returns custom / known / unknown, custom reads the stored IDs before the DELETE and rebuilds from a bound `IN( … )`, unknown is still refused because the view name is interpolated into SQL, and the card's note now says where the rebuild will read from
+- Fixed the Status card going stale after any list change, since it belongs to another module and only the Recipients portal was refreshed (a header reading 'Recipients: 5' above a verdict of '0 of 1 recipients have a usable email address'); `cardRecordStatusRefresh()` replaces just the card body so expand/resize survive, `BlastsRecipientsMT` overrides `recPortalRefresh()` to cover add, add-from-view, delete and reset in one rule, and `doSendBlast()` repaints list and card before printing its summary instead of leaving the operator on 'Sent: 0' with a live Send button
+- Added `docs/blasts-send.md` recording the entry points, the two invariants (`candidatesPredicate` built from `SEND_STATUSES_A`; `SEND_ATTEMPTS_MAX` as the cap rather than a literal 10), the fact that nothing in this tree calls the class and the three points where it disagrees with the live `doSendBlast()`, and fixed `blastSend.php`'s header to say ported-but-unwired and drop citations of SCCA files that do not exist here; also recorded the decision not to rewire `doSendBlast()` because 'Simulated' sendability and the whitelist change who receives mail and no send can be executed here to prove a rewiring
+
+2026-11-13 18:07 UTC
+
+- Fixed the list search to name a view's own findable columns instead of prefixing the base table's with the view name, to search everything when a filter is unrecognised rather than turning it into a column, and to offer only columns the view carries in the filter dropdown, after production produced two 1054s in one day on `Contacts_MembersActive.ModMassagedTS` and a bare `Contacts_Applications`
+- Fixed `cardListSearchColumnsView()` so a view the schema does not know falls back to the base table and its relations exactly as All does, guarded by `$viewKnown`, because an unknown view previously contributed no columns and suppressed the base table's too, leaving a WHERE with no conditions that silently returned the whole list; also vendored `include/trie-ahocorasick` and made `PATH_ROOT_INCLUDE` fall back to the app's own `include/` so the suite runs on a clean clone
+
+2026-11-11 17:39 UTC
+
+- Removed `xanApp/folderFork/` from the served tree (moved to `/root/retired/folderFork-20261111-1530`) because nothing referenced it, its data directory held no entries in four months, and its unauthenticated upload endpoint was still answering requests
+- Added `/projects-khan`, a read-only board following the vault's own sections (Now split by holder, Active by project, Areas, Completed in the last seven days) with a `?popup=1` chrome-less render, counts checked against SQL on dev001 rather than against the page
+- Added the Khan button to the project header's begin slot in `cardActionsDetail()`, left of Print, built from plain tags rather than `TAGS_ELE_BUTTON_DROPDOWN` so it would not open a menu it does not have
+- Renamed the header button's label to "Khan", matching the vault's `0 Projects Khan.md` and the `/projects-khan` route rather than the "Kahn" in the request, because an icon-only expand glyph beside the print glyph read as "expand this card"
+- Updated the Khan button with `FI_DASHBOARD` (`fa-table-columns`) added to the icon catalogue, a margin-on-a-span gap that survives inline-block layout, and `mb-1` so its box tops land at 56 like the print and records buttons
+- Fixed the Khan glyph riding about 3px above its neighbours by giving it an explicit 21px box and a margin onto their band (8.2 against 8 and 8), since flex-centring put it at 5.5 — a different wrong answer
+- Updated the active pill from `#0d6efd` to `#e9ecef` on `#adb5bd` because blue in this app means "go somewhere" (the GTRR arrow), swapped emoji section headers for the icon font, and cut cards 59px to 44px by moving the chips onto the meta line
+- Refactored the Khan sections from a card wall into dashboard-style tables (12px uppercase labels, 11px heads, 13px rows) so 402 rows fit the page that showed about 40, and `/projects-board` and `/projects-khan` sit beside the dashboard rather than beside a Trello board
+- Replaced the popup window with the projects landing page: `/projects`, `/projects/khan` and the header's Khan button (now a real anchor) all land on the board, with no `window.open` and no `?popup=1`
+- Fixed `/projects` so it no longer renders the board — only `/projects/khan` does — because an empty record id means "nobody said which project", not "the board"
+- Moved the board into the projects module's detail area: it builds `$resp` the way `content-page.php` does, calls `cardListCard()` to keep the project list and search in the fixed left column, passes `pathLastSet( $resp, true )` as false, and ends with the `PATH_PAGE_RESP` require or the page comes back blank
+- Replaced the long task tables with the tiles, the vault's project grid (each name a link to its record) and a Hal · Clients card, counting 41 projects by area rather than 45 because four live outside the four areas and the table has to add up
+- Updated Khan's type to portal sizes measured on a record page (14.4/500 grid cells and task lines, 17.28 card header, 13.5/600 section labels) and made the header read "Projects: Khan" the way a record page reads "Projects: ClipSpinner / Active"
+- Removed the folder glyph in front of every project name in the Khan grid, decoration in front of a link that already says what it is and it took the left gutter on all 41 rows
+- Updated both Khan cards to 50% width (612px, stacked) and retuned the tiles to 8px padding, 11.2px captions and `flex-basis: 0` so all five share one 79px row
+- Fixed the card width to 29rem — half of the old 58rem rather than 50% resolved against the flex container — so the two cards sit side by side, with tiles three per row and "— yours, someone waiting" dropped from the clients label
+- Moved the client counts into the card header's right-hand slot and removed the in-card heading that repeated "HAL · CLIENTS", the way every other card in the app carries its numbers
+- Added 10px of air between the header's count slot and the expand button so "22 tasks · 8 projects" no longer sat flush against it and read as part of the button
+- Added the three cards the vault page carries beside the client one (Hal · Other, Pi, Parked) on one renderer, and fixed the client card's missing `</div>` that had parsed the new cards inside it — present in the HTML, invisible as cards
+- Removed the subtitle after the em dash on each card title, keeping the totals, because "Hal · Other — yours, no client waiting" restated what the header already said
+- Added three Khan views — By Dev (default), By Project, By Priority — chosen by URL `?view=project` so a view can be bookmarked and sent, made project names links to `/projects/<uuid>`, and capped cards at 80vh with the body scrolling inside
+- Updated the card wrapper to `repeat(auto-fill, 29rem)` inside its own grid element so cards flow into as many fixed-width columns as fit without stretching, leaving the framework's flex-wrap container untouched
+- Updated By Priority and By Project to start at 58rem — two columns of the dev view's grid — because those two views are one long list rather than a set of piles
+- Fixed the big gap in the wide views by having both cards fill their `minmax(58rem, 1fr)` track, so one column takes the width it is given instead of leaving a strip of page empty and a second column appears on a very wide screen
+- Refactored the grid back to fixed 29rem tracks with a slot per card claiming one or two tracks, and moved the flow inside the wide card via `column-width:21rem` with `break-inside:avoid`, putting every row on one 14.4px type scale
+- Moved the Ferry library path to `Projects/<Project>/<Item>/<Task>` across `ferryPathRows()`, `publish.php`'s `DOC_ROOT` and `documentsRootRel()`; the first attempt changed only the index prefix, so it wrote 0 files and reported 379 "unchanged"
+- Updated the Khan card height to `calc(100vh - var(--xan-nav-height) - var(--xan-header-height) - 20px)` instead of a guessed 90vh, put every row on one 14.4px scale, and grouped By Priority into priority-decade bands with the count in each heading
+- Added a `ResizeObserver` per card so a row levels to its tallest member when the CSS-resized list card changes (`[944, 944]` to `[1054, 1054]`), and made the project grid take the height it is given rather than ending in white space
+- Updated the Khan grid to two area columns (Clients beside Apps, Sites beside Labs) with cards at 26rem, removed the stretched table height that had made rows 60px for 24px of text, made task titles the link to their document, and added `docs/ferry/README.md`
+- Added six short answers at the top of the Ferry README — what it is, what you do with it, where the files are, how to tell it is working, what each complaint means, what it will not do — because the reader wants to know whether it is fine, not how the merge engine works
+- NOTE - Recorded in the Ferry doc that the token field is empty on purpose and what proves it is set
+- Updated the Ferry install section to split what a person receives and does (drag to `~/Applications`, right-click Open because it is not notarised, pick the vault and paste the token, start at login) from the build note, naming the four things a Sparkle release still needs
+- Added a one-page install sheet for Alex to send with the zip: what he receives, the right-click standing in for notarisation, the four settings, day-to-day use of the vault, how to tell it is working, and what each complaint means
+- Updated Khan by dev to merge Hal · Clients and Hal · Other into one 91-task card with Clients before Other, and added an Alex card that exists before he has work so it is a card somebody looks for
+- Fixed Alex's rows to be classified before the Hal/agent split, since the classification only knew two answers and his first task would have appeared on both cards; also added a `.pk-line::before` bullet per task and pluralised "1 task · 1 project"
+- Updated task document links to open in their own window via a plain `target=_blank rel=noopener` link, so reading a document no longer replaces the board you were working on
+- Fixed the `xan-init` opcache line that was a comment pretending to be a switch: `ini_set()` runs too late to unload opcache while still blocking every later include from being cached (133/135/134ms without it, 179ms with), so the switch that works is the FPM ini with `validate_timestamps=1` and `revalidate_freq=0`
+- Added `xan/live-users.php` and `xan/liveUsers.php` so the four named people get uncompiled PHP for their own request only, with the badge drawn through `fontIcon()` because the app carries its own icon font and Font Awesome is not loaded
+- Added the three call sites the per-person compile switch needs — one line after `app::init()` in `index.php`, the badge in `templates/page-resp.php`, and the DEV/PROD styles in `xan/xan.css.css` — verified by A/B on the roster
+- Moved the DEV/PROD badge to the end of the nav bar, after the navigation and the two dropdowns, rather than out of the middle of the menu list where it read as another item to click
+- Added a click-to-switch on the badge, gated on the roster and handled after `app::init()`, because before the session starts there is no roster answer to check and the first version silently forced everybody to PROD
+- Updated the badge to text only ("Dev"/"Prod") outside the menu list and left of the logo with 23px of air, and gated toggling on both roster membership and `PrivAdminYN=Yes`, including the `?xan_live=1` parameter, since a control any signed-in user can pull from a URL is not a control
+- Added "Mode: Not Compiled" (amber) or "Mode: Compiled" (grey) to the console's page-load block, swapped in glyphs the 180-glyph vendored subset actually has (a terminal screen for Dev, a speedometer for Prod), and fixed the Prod anchor inheriting the nav's near-black
+- Moved the Dev/Prod pill past the logo to the far right, because left of the logo it read as part of the brand, and marked the intelephense "Undefined variable `$xanTimeBegin`" at line 728 as a false positive since `index.php` sets it in the requiring scope
+- Moved the Dev/Prod pill into the menu list as its final `<li>`, after the Stats menu and the two dropdowns, where it reads as the end of the menu and stays inside the viewport down to 1024px
+- Fixed the Dev/Prod pill's spacing to match a nav item by dropping its `0 8px` margin and keeping only the wrapper's horizontal half, removing the 18px of extra air the links' padding already provides
+- Updated the Khan view pills and the task portal's status pills from the grey `#dfe3e8` to the navbar's own selected blue `rgb(204, 229, 255)` with a border one step darker, measured from the active nav item; Alex's install sheet now has him pick his own vault folder
+- Updated the board, the task record and the N-documents page to link at `/documents-edit` instead of `/documents-popup`, and made the editor's Done return to the task's document list, because a read-only popup should be neither the way in nor the way out
+- Fixed the Khan board's right-hand scrollbar by making the cards share the height the page gives them (`grid-auto-rows: minmax(0,1fr)`, `.pk-cards` at 100%) instead of each asking for `calc(100vh - nav - header - 20px)`
+- Fixed the cards overhanging the project list by exactly the 16px bottom margin the list card carries, which the grid now subtracts and names in the rule rather than leaving as a number
+- Removed the `background: red` declaration sitting directly inside an `@media` block in `xan.css.css`, where a declaration with no selector is invalid and every browser dropped it — nothing red ever rendered
+- Removed `/projects-dashboard`, including its route, its link and its file, because `/projects/khan` carries the same data and two overviews of one set of numbers is two places to forget to look; also fixed the importer to match a project on path then title, merging SCCA, PreferOptic and UnderTheCrown from 46 projects to 43
+- Added the five files that were live on dev001 but never in git — `xan/iconFont.css`, `xan/iconFontFA.css` and the two test-mode migrations — deliberately leaving out the stale `BlastsRecipientsMT` duplicates and the generated schema caches
+- Updated Khan to one column of areas and a 13rem Khan card inside the 26rem track, and fixed the board's query, whose `ImportedPath IS NOT NULL` filter hid every task created in the app (nine of them, Waiting 84 to 90)
+- Fixed the half-width hole left by the 13rem card in a 26rem track by making the tracks 13rem, so a card needing half the width takes one track and every other card spans two, 10px apart at all three viewports
+- Updated By Project and By Priority so their Khan card is the same 13rem width as By Dev's, since it is the same card holding the same counts, with the list taking everything left over
+- Fixed the 500 on project delete by defaulting the typed `xan\response::$response` property to `\xan\app::response()`, because `module::recDelete()` fatalled on the uninitialised property in every module that deletes through the portal path
+
+2026-11-10 14:28 UTC
+
+- Fixed the `ProjectsTasks` INSERT in the tasks importer, which gained the `ParkedYN` column without its placeholder so every new note died on `SQLSTATE[HY093]`, and the bare-name binding that handed the agent `Hal Pi` 133 of Hal Gumbert's tasks, so the statement is now built from one column list and a bare first name resolves to the person while `Pi` alone means the agent, with a five-minute LaunchAgent wrapper making the "update xanadu projects" rule hold without anyone remembering it
+- Added `insertSql()` in `docs/import/lib-sql.php`, building every importer INSERT from one array of literal column names so the `ParkedYN` class of drift between columns and placeholders cannot recur, with `docs/import/test-import-sql.php` pinning names == placeholders + literals and executing the real `ProjectsTasks` statement inside a rolled-back transaction, because the broken version had prepared fine and only failed at execute
+- Moved Vault Steward into `xanApp/vaultsteward/` as plain PHP under the docroot with its own `index.php` and `lib/`, narrowed the blanket `location ^~ /vaultsteward/ { deny all; }` to the data prefix and library only so the page answers 200 while `xanApp/vaultsteward/vaults` answers 403, and commented `cardVaultSearch` and `cardAITest` out of `HomeM/content-page.php` so the vault search and the AI transport test have one implementation, on the new page
+- Removed the `xanApp/vaultsteward/vaults` symlink into `xanStorage/vaults`, the docroot path resolving to vault data that the deny block exists to cover and that only a relaxable location rule defended, and made `index.php` pass `SESS_USER['Groups']` to `Vaults::visible()` so a `groups` grant matches nobody until a real membership source exists
+- Removed the AI Transport Test's two leaks of internals, the lede naming `\xan\ai` and the provider box naming AIProvidersJSON, and added `docs/vaultsteward-check.sh`, whose eight GETs require page and logo to be 200 and vaults, their indexes and the library to be merely "not served" rather than 403, because 404 is equally correct once the data is outside the docroot
+- Updated `xanApp/fmscope/contacts` and `xanApp/fmscope/assets` to the deployed copies, since the repo was behind by a lot — 618 lines against the deployed 1449, and no `layouts.json` — and rewrote the 15 `font-family: -fm-font-family(arial,sans-serif,ArialMT;sans-serif)` declarations the browser was discarding at the semicolon, noting the defect is FMScope Test's CSS writer and this commit only the record of shipped output
+- Updated both regenerated fmscope apps as deployed from the DDRs, with three generator defects fixed at the source: the discarded `-fm-font-family(...)` declarations, a database that could not be opened reaching the browser as a blank 500 (now a 503 page needing no database), and a failed read rendering the empty-state sentence, so the page claimed "No records yet" for a list it never read
+- Replaced the tree's draft `xanApp/vaultsteward/index.php` with the canonical copy from `~/Docs/Dev/Apps/VaultSteward` installed by `web/install.sh`, fixing the AI panel's flat POST fields (the app reads a JSON `params` string) that made it answer with no actions and say "No result came back", and rendering the panel for signed-in viewers only, since anonymous visitors got a button that could never work
+- Added the deployed vault deny rule to the repo's nginx vhost, which had no vaultsteward rule at all, so a vhost redeployed from the repo would have quietly dropped the one thing standing between the internet and 41 MB of mail index while the page kept working
+- Fixed the repo's vhost by adding the `/vaultsteward/lib/` deny rule the live server already had, found by comparing the server to the repo: a redeploy from that file would have served `VaultAccess.php`, the implementation of the rule deciding who may read a vault, to anyone who guessed the path, while the check watching the live site stayed green
+- Removed the vault-search card's code in the order the tree survives at every step — the `Do=vaultSearch` dispatch case, then `do-vault-search.php`, then the method, then the commented-out calls — so no step left a handler requiring a missing file, and kept `cardAITest()` unrendered beside `cardAIChat()` because the `/vaultsteward/` page still posts to `Do=aiTest` and the card is the only place those parameters are written down
+- Added a docs note making the suite run before the commit rather than after being asked, recording the runner command for this host, why XDEBUG_MODE=off, why `tests/.phpunit.cache` is cleared when one test disagrees with the suite, and the evidence standard per change type — after nine commits landed without the 608 tests and the failure found afterwards traced to cached state rather than the change
+- Replaced the tree's one-fix-behind `xanApp/vaultsteward` copy with the canonical one via `web/install.sh`, fixing the AI panel iterating the reply envelope `{rowsD, xanDoJSA, tries}` and throwing "is not iterable" where the answer belongs, and restoring `Vaults::reconcile()` — before the deploy, because the next deploy ships the tree's copy
+
+2026-11-09 12:18 UTC
+
+- Fixed the importer's bare `continue` on an existing `ImportedPath`, which made a second run a no-op instead of a convergence and left six relative `PathPrimary` values, six Labs/Systems tasks with no thread document and a Sites/Xanadu body edit unlanded; the vault is now authoritative every run for what a note says, and the app's run evidence is seeded on insert and never touched again
+- Added orphan reporting to the importer and `--clear-orphan-leases` for Worker and Busy only (Dev is a person holding a note, not a queue): a stage move leaves a row keyed on a path that no longer exists, two of which carried `pickup: Worker` and so served `task.list` a row whose note was gone - after the report first sat past the dry-run exit, then inside `if ($DRY)`, and `Documents` turned out to have no `Pickup` column
+- Added `GET /projects-api?action=projects.counts&token=…` returning the shape `~/bin/projects-dump` already builds, so xanPanel reads xandev instead of a vault dump - carrying the vault's own status split through a new `ProjectsTasks.ParkedYN` and `ProjectsTasks.OrphanedTS` to keep rows whose notes moved out of the totals, and accepting a query-string token for this one action while refusing it everywhere else
+- Updated the API header to list the `projects.counts` action the panel calls, which it omitted while listing every other action, and the orphan section to say that a normal run is what stamps the `OrphanedTS` rows a count has to skip
+- Fixed `appReject` returning a 403 from its bot list to `curl`, `wget`, `python-requests` and other user agents before the agent API's token was ever read (xanPanel spent twenty minutes assuming its token was wrong), exempting that route the way `settings-api` already is while the URL-pattern injection and traversal checks above still run; also added `uuid` to each `projects.counts` project and documented the UA gate in the API header
+- Added `/projects-dashboard`, where the work is per project and per vault group as a stacked bar scaled to the busiest project so a lopsided pile is visible without reading a number, and moved the counts into `xanApp/include/projects/counts.php` so `projectsCounts()` serves both the page and `projects.counts` rather than two copies that drift
+
+2026-11-08 16:43 UTC
+
+- Added the Ferry foundations to the schema (`DocumentsVersions.PrunedTS`, a `ModTS` index, `ContentBlob.Body` widened to LONGTEXT, `Documents.UUIDForkOf` so a conflict fork names the document it forked from) and `docs/sync/merge.php`, whose diff3 body merge gets a row-wise table pass so two people appending a Work Log row merge instead of falsely conflicting, and which returns no text at all on a dirty merge rather than putting `<<<<<<<` markers in a file Obsidian indexes
+- Added `ferryDocWrite()` as the only path that changes a document body, with the web editor and the agent API both going through it - storing the replaced body as a revision first, forking rather than overwriting on a dirty merge, and refusing a named base the server no longer holds instead of silently falling back to a 2-way overwrite
+- Added `/documents-revisions` (paged, filterable by document, user and project, with removed documents still listed as a fact), `/documents-revisions-diff/<uuid>/<hash>` over `diff -u`, a History tab in the popup with `?rev=<hash>` read-only rendering, and a per-blocked-user conflict Release control - and fixed `\xan\xan::echo()` being a pass-through with no escaping, which cut the hidden-params JSON at its first quote so both forms posted `'{'` and failed without an error
+- Added revision retention: the newest 30 revisions per document kept, anything older than a year pruned, the newest always kept however old, the current body never pruned and `DocumentsVersions` rows never deleted (pruning stamps `PrunedTS` and deletes the folder, never a file inside it), installed as a Mon 03:17 `/etc/cron.d/ferry-prune` job that dry-runs by default and takes `--apply` from cron
+- Added a `.md.meta` sidecar beside every exported body so a vault rename is attributable to a document without index or database, made path collisions deterministic (originals before forks, then case-insensitive byte-wise title, then uuid, since the SQL sort tied `Report` and `report`), replaced the exporter's duplicate `safeName()` with the writer's `ferrySafeFilename()`, and reported orphans on every run while deleting them only with `--prune-orphans`
+- Added the sync protocol behind the same bearer token as the rest of the agent API - `sync.ping`, `sync.manifest`, `sync.bodies` keyed by hash, `sync.push` through `ferryDocWrite()`, and a 28-second `sync.events` long-poll that closes the PHP session before waiting - with no cursor and no server-side tombstone table, sending the whole manifest each time, and `ferryPathRows()` moved out of `publish.php` so exporter and API cannot drift
+- Fixed `sync.bodies` reading only `ContentBlob`, so a document whose body lives on `Documents.Notes` had its hash asked for, got nothing, and was skipped forever without an error; it now falls back to the document body and reports any hash it still cannot satisfy
+- Updated the two project rows that only hold documents never in an Obsidian folder (`Convert FileMaker DB to Web App`, `Export PDFs`) to carry `~demo/<Title>`, and the planner to skip `~%` paths, so being deliberately outside the vault is a rule the importer and exporter both honour rather than an accident of having no ImportedPath
+- Fixed the proposal table saying a task note becomes a `ProjectsItems` row: `ProjectsItems` holds exactly four bucket rows per project - Parked, Not Started, In Progress, Complete - and every task points at the bucket matching its Status, which answers the doc's own open question 1, that task notes become `ProjectsTasks`
+
+2026-11-07 18:39 UTC
+
+- Replaced the `EleChoicesValues = 'SELF'` dropdowns for Status, Pickup and Billing with the fixed constants `ARRAY_PROJECTS_STATUS` / `_PICKUP` / `_BILLING`, because a SELF list only offers states somebody has already used, leaving a project whose tasks are all Parked with no way to select Complete
+- Decided that Status and Billing Status are one lifecycle line (`Parked, Not Started, In Progress, Complete, Bill, Invoiced, Paid`), dropping the `BillingStatus` field from `SettingsSchema` while keeping the column and its values intact so the two-axis model can be rebuilt if this turns out wrong
+- Updated the band tables to size to their content with `.1rem .3rem` cell padding and labels that hug their text, because at `width:100%` the table stretched and the spare width landed between the groups as gaps
+- Updated the band vertically: cells lost their vertical padding and a scoped `.xan-band` stylesheet zeroes the controls' own margins once per portal render, because the space was three stacked controls' `margin-bottom` plus Bootstrap's line height, repeated for each band row
+- Removed the horizontal band change (auto width, auto labels, widened inputs) back to the full-width table with 4rem labels and 5rem inputs, keeping only the vertical tightening, because Hal meant vertically
+- Fixed the band rows staying open by giving each cell `height:1px` and `line-height:1`, because padding was already zero and the controls' margins were already zeroed, so the leftover height was the line box rather than the padding
+- Removed every hand-written band rule (`.xan-band`, inline padding, the emitted `<style>` block, `height:1px`, line-height overrides) so the band uses the upper half's own `TAGS_CELL_RM('3.5rem')` and `TAGS_CELL_LM('5rem')` cells, after three attempts at styling the spacing by hand were each worse than the design already on the page
+- Updated the band's label columns from 3.5rem to 6rem with 7rem inputs, because at 3.5rem each group settled at a different width and the inputs started at four different x positions, so the band read as ragged rather than as four aligned columns
+- Fixed the band's date fields by capping the flatpickr wrapper at 7rem and sizing cells to 6rem labels with 9rem inputs, because `recCol_Input_Portal` renders a date as an inline 9rem wrapper plus a calendar `<select>`, so the wrapper overflowed and every calendar button fell onto a second line
+- Fixed the band's uneven row gaps (32/54/33px) by capping the band's textareas to 2rem, because `Returned Why` is a textarea rendering at 53px while every other control in that row is 32px, so its neighbours sat lower and the gaps looked arbitrary
+- Updated the task documents page to build a response and go through `PATH_PAGE_RESP` like every other page, because it emitted HTML directly and so had no stylesheet, no nav and no header — a working page that looked broken
+- Moved `Pickup At` above `Pickup` in the band and `Approved At` before `Completed At`, giving the order Priority/Label/Source, Pickup At/Pickup/Batch, Returned At/Returned Why, Approved At/Approved By/Completed At
+- Added a document popup window with `ParsedownExtra`-rendered markdown, the record page in an iframe and an `EasyMDE` body saved through a new `DocumentTextSave` branch that writes a `ContentBlob` and a `DocumentsVersions` row so history stays content-addressed, made `recImage` return nothing when `FileFN` is empty instead of drawing a 140px photo placeholder, and fixed `DocumentsVersions.ModTS` (not `CreatedTS`) in `do-conflicts.php`, `paramEncode()` HTML-escaping every saved body, and the textarea being escaped twice
+- Removed the Bucket card from the documents popup for markdown documents, since it can only draw the camera placeholder for a markdown file that has no file at all
+- Fixed the documents popup showing a second nav by skipping the whole brand bar and its reserved height when `extrasD['hideNav']` is set (not just `navInclude`), added a post-parse transform turning `- [ ]` into disabled checkboxes because `ParsedownExtra` has no task-list support, and built the list popup prefix from `nameModule` since the handler was selecting `DocumentsList*` while the module names its rows `DocumentsMTList*`
+- Updated the task documents list rows to point at the popup instead of `/documents/<uuid>` and to strip comments, heading hashes, fences, emphasis and link syntax from the preview, because reading a task's notes meant landing on a set of inputs and the snippet opened with `## Thread <!-- Thread format:`
+- Added a pill pair under the title that switches the band between the field groups and a scrollable list of document chips, plus `Users.WorkerYN` registered in `SettingsSchema` so `Worker` is a property of a user rather than a second table, and moved ownership of the 129 tasks the import had given the Hal Pi agent to Hal Gumbert while the worker pointer stayed on the agent
+- Updated the Items portal with 8px of space between the column headers and the first group band, matching the tasks portal where the two sat flush against each other
+- Updated the tasks portal so the docs switch is scoped to the fourth band slot (Approved At / Approved By / Completed At) as one cell spanning its two columns and three rows, and Docs is the default pane when the task has documents, because replacing the whole band removed the three groups that never change
+- Updated the tasks portal: the title input goes from 7rem to 14rem with the description column giving up the difference, the pills moved out of the title cell into the fourth band slot, and the chips became the portal's own blue GTRR button followed by an ordinary link that needed an explicit `line-height` to render as a flex item
+- Updated the tasks portal's GTRR button to 1rem square with border, radius and icon sized for it, top-aligned both panes in the slot, and gave the slot one height either way so switching tabs no longer grew the row by 25px
+- Updated the tasks portal with a little air between the third band group and the documents slot, as padding inside the slot's fixed width so the band still fits the card
+- Updated the tasks portal with gutters between the band's groups so `Returned Why` no longer sits against the Batch input, paying for them with 6.5rem labels and a 15.5rem documents slot, and giving the approval table its own 5.8rem label column so its date buttons stay on one line
+- Removed the forced `min-height` on the documents slot, because it was taller than the band's three rows so the rowspan cell forced every band row taller — 40/42/41 instead of 32/33/33 — reintroducing the uneven-gap problem the fix for the tab jump was meant to solve
+- Updated the tasks portal by dropping the 8px spacer between the column labels and the first group band and putting 5px under each group heading instead, so the band reads as a heading for the rows below rather than a stripe touching them
+- Fixed the documents slot's vertical alignment by putting `vertical-align` on the table cell itself rather than on the wrapper and the panes, which did nothing and left the slot's four rows of content centred in a three-row span
+- Added a side-by-side document editor with markdown on the left and the rendered page on the right, after measuring Toast UI rewriting 649 characters of an untouched document (24,831 chars in, 24,182 out, `- [ ]` becoming `* [ ]` and every table pipe escaped), so the saved file stays exactly what was typed; fixed a blank preview from `previewRender` returning `''` while DOMPurify loaded and the markdown renderer being called off the bare prototype
+- Fixed the Approved pane being 115px against the band's 96px by making its controls compact (1.5rem, scoped to that pane) and dropping the pill row's margin, because the taller rowspan cell took the difference out of every band row — 40/42/41 against 32/33/33 in both tabs
+- Updated the tasks portal with air under the pill row, taken from slack rather than from the band: the approved pane measured 97px against the band's 98px, so the gap costs nothing and the rows stay 32/33/33 in both tabs
+- Fixed `EasyMDE` side-by-side, which is fullscreen mode: the preview now invokes the markdown renderer against the instance and boot waits for both libraries, the fixed panes are raised above the navbar's z-index 500 so it stops eating every toolbar click, and the toolbar carries its own Save because the page's Save button sat behind the editor
+
+2026-11-06 15:32 UTC
+
+- Moved the eighteen workflow columns out of the framework's `Mod*` bookkeeping tail in `SettingsSchema`'s `ColumnOrder` so task forms read in the order the work is thought about (what it is, the estimate block, who has it, when things happened, what the automation recorded), and relabelled `Pickup TS` to `Pickup At` because only the leaking column names changed
+- Added a database `CHECK` so a document belongs to a project OR a task and never both, migrating 263 task documents to a single parent and saving the discarded project pointers to `documents-project-map-*.csv`, because publish resolved the project through `Documents.UUIDProjects` while the board drawer went through the task's item and the two queries only agreed by luck
+- Added the twelve workflow fields as editable inputs on the `ProjectsTasks` portal plus a `/projects-taskdocs/<task>` page holding one task's documents at its own URL, and a live bug went with it: the Sales billing portal filtered `ProjectsTasks.Status = 'Bill'`, which the workflow vocabulary never holds, so it now filters `BillingStatus` and reaches its 3 rows
+- Moved the thirteen workflow fields under the five original columns that answer the same question (Status, User, Other, Billing, Stamps), because thirteen fields stacked in the trailing column made every task row about twenty lines tall and stranded the title and description at the top of an empty cell
+- Moved the new fields into their own full-width band under each task and restored the original five columns (Status, Title, Description, User, Other), because mixing them made every row a 300px block with a dead middle
+- Updated the band on screen: `Worker` moved out of the band and under the owner in the User column, the band labels switched to the portal's own `recCol_LabelBlock_Portal` style, and the four groups stacked vertically instead of twelve fields laid flat
+- Fixed tracked images never loading by rewriting `content/` image `src` attributes to `https://<APP_DOMAIN>/content/...` at merge time, because the letter's `../content/...` prefix resolved against nothing in an inbox so no mail client ever fetched it and zero opens were recorded
+
+2026-11-05 18:44 UTC
+
+- Added the Projects schema the Obsidian board needs: 17 columns on `ProjectsTasks`, task and item links plus `ContentBlob`/`DocumentsVersions` on `Documents` keyed by `UNIQUE(UUIDDocuments, ContentHash)`, and `BillingStatus` split out of `Status` so `ProjectsTasksMT`'s Sales portal (keyed on `Status = 'Bill'`) would not silently return nothing, with the three Bill rows moved to `Status='In Progress'` + `BillingStatus='Bill'`, a latent undefined `$recIndexRange` in `cardPortal()` fixed, and 19 new columns registered in `SettingsSchema`
+- Added `docs/import/import-obsidian-projects.php` importing 42 projects, 263 tasks and 263 documents from `! Hal/40 Projects` with folder-to-Status mapping, idempotent on `ImportedPath`, plus `Projects.ImportedPath` so projects are keyed on their vault path instead of a title that merged `Clients/SCCA` with `Sites/SCCA`
+- Fixed `tableTriggersInstall()` emitting `IN pUUIDProjectsItems TEXT` bare, which let the parameter take the database default `utf8mb4_0900_ai_ci` and raised 1267 "Illegal mix of collations" on any task write with an Item attached; the collation is now pinned in all three generators (ProjectsTasks, Sales, SalesItems)
+- Added the rebuild script for the imported projects data, for when the importer itself changes in a way that invalidates existing rows, re-running in dependency order (documents and their versions point at tasks) and deliberately keeping `ContentBlob` so content-addressed bodies are reused
+- Added project-level document import so the 61 loose notes in project folders (the `0 <Project>.md` summaries and files like `NetSuite - plan.md`) land as `Documents` with `UUIDProjects` set and `UUIDProjectsTasks` NULL, keyed on the new `Documents.ImportedPath`, bringing the totals to 324 documents and 319 content blobs
+- Added `/projects-board`, a server-rendered Khan board with four Status columns, cards grouped by project then label and sorted by Priority with NULLs last, and `/projects-board-do` JSON actions `move` (whitelisted target status stamping `PickupTS`/`ApprovedTS`/`CompletedTS`, with the current status button not rendered) and `docs` (task documents plus its project's project-level documents, `all=true` dropping the per-task filter)
+- Added `/projects-api`, token-authenticated JSON for the Hal Pi and Alex Pi agent identities compared as sha256 against `ApiTokens` so writes are attributable, with `tasks.list`, `task.get`, `documents.list`, `task.move`, `task.claim`, `task.release` and `document.save` (writing a `ContentBlob` + `DocumentsVersions` row), the 30-minute `Pickup='Busy'` lease enforced, and a bug fixed where `claim` overwrote `UUIDUsers`
+- Removed `ProjectsApiMT/router.php` because routing keys on the first dash-separated component (`xanApp/router.php` `$component1Base = explode('-')[0]`), so `/projects-api` is dispatched to ProjectsMT's router and the file would never run
+- Added `publish.php`, which writes the 324 MySQL document bodies out as `xanStorage/sync/Documents/<Project>/<Title>.md` (project folders named by vault path so `Clients/SCCA` and `Sites/SCCA` do not merge) and an immutable `index-NNNN.sqlite` renamed into place keeping the newest two, and `materialize.php`, which hard-links the snapshot into `~/Docs/XandevDocs` rather than copying and detects renames by inode
+- Added `conflicts.php`, which scans the sync tree for Syncthing's `.sync-conflict-<date>-<time>-<device>` copies, pairs each with its live original and prints a unified diff trimmed to the changed rows, parsing both naming forms so a copy is not renamed `name.md.md`, and renamed the router's local `$component1`/`$path` to `$routeComponent1`/`$routePath` to clear undefined-variable reports
+- Added documentation of the sync pipeline (MySQL -> publish -> dev001 sync folder -> Mac -> materialized view), covering why the bucket is left alone, why the index is immutable, why the view is hard-linked and why renames are detected by inode, and recording that 324 documents are published and the view built while the Syncthing package install still waits for Hal
+- Added `/projects-conflicts`, listing each collision Syncthing left behind with its actual difference against the live original, and `/projects-conflicts-do` with `keep_mine`, `keep_theirs` (rewriting the document via `ContentBlob` + `DocumentsVersions` + live file so the next publish sees no difference) and `keep_both`, resolving paths through the published index so a crafted rel cannot reach outside `Documents/`
+- Added `seed.sh`, which replicates `Documents` + `.index` from dev001 to the Mac, rebuilds the readable view and reports conflicts until Syncthing runs, gzip-checking the archive in a temp file before replacing anything so a half-failed ssh read cannot truncate the destination like a successful sync
+
+2026-10-28 17:18 UTC
+
+- Replaced HomeM's `cardAIChat` with a vault search card that searches every vault under `VAULT_ROOT` (`xanStorage/vaults`, a docroot sibling nginx cannot serve), groups hits by vault and probes each vault's schema so one pre-description-column vault no longer breaks the whole result set; the old card stays in the class but is no longer rendered
+
+2026-10-24 11:43 UTC
+
+- Added `docs/fmsb/verify-fmsb-ddr.php` and the rewritten `docs/fmsb/README.md` from the FMSB invoicing and Projects review for Xanadu gaps, with the run's throwaway probe scripts left in `sandbox/` beside them as the audit trail
+- Added `\xan\ai\aiUsage` (xanApp/xan/ai/aiUsage.php) with `tests/Unit/xan/AiUsageTest.php`: one JSON line per AI call appended to a monthly file under `xanStorage/ai-usage/`, `totals()` summing by user, site, provider, model and surface, and `record()` returning a bool that never throws or warns, because a warning printed mid-stream corrupts the SSE frame
+
+2026-10-23 23:30 UTC
+
+- Added \xan\home (xan/home.php): the Home page's cards as one list - the framework's own five, then the `home` cards each enabled bundle declares - so a bundle puts a card on Home by changing its manifest, not app/HomeM/content-page.php, and a switched-off bundle takes its card with it
+- Updated HomeM/content-page.php to render that list, so the file no longer names a module; a bundle's card is additionally checked against moduleIsActive() and the class it names, and a core card renders exactly as before
+- Added the `home` field to the bundle manifest, to bundle.schema.json and to bundle::errors(): a card must name one of the bundle's own modules, must have a title, and two cards on one page cannot share one
+- Added per-bundle migration rules: every migration is named YYYY-MM-DD-name.sql (or NNN-name.sql) and the manifest lists them in run order, which bundle::errors() now enforces; enable runs .sql migrations when it creates the tables or always with --migrations, and lists a .php migration for a human instead of pretending to run it - until now enable planned migrations and never ran them
+- Added --expect=<key>=on|off to tools/ops/bundle.php: status --ci fails when the install does not carry what the caller says it should, so "the bundle is off" is asserted rather than assumed
+- Added the CI matrix entry: BUNDLE_OFF=alm ./doTests.sh disables ALM on the install under test, runs the bundle gate with --expect=alm=off plus PHPUnit and Playwright, and re-enables ALM on exit (including on failure); a disable that does not take fails the run instead of testing the bundle-on install
+- Added tests/e2e/bundle-alm-off.spec.js assertions that Home still renders the framework's own five cards, so the contribution point cannot quietly lose one
+- Added bundles/vault_steward/DRAFT.md: what the VS bundle already has decided (key, tag, Contacts dependency, corpus in xanStorage), what it will need, the three open decisions, and why it is a draft rather than a manifest until the tables exist to generate one from
+- Added tests/Unit/xan/HomeCardsTest.php and extended BundleTest: 29 tests, 158 assertions, all passed locally
+- NOTE read from xandev, ALM is "installed but switched off": its 13 SettingsModules rows exist, |ALM| is not in APP_ACTIVE, and its routes still answer - the gap in bundles/README.md, and the state `status` now calls a warning and --expect=alm=off calls an error
+
+2026-10-23 21:00 UTC
+
+- Added switchable module bundles: xanApp/bundles/alm/bundle.json declares the ALM bundle's 13 modules, the tables behind them, its Contacts dependency, the two core modules that reach into it and the versions, so a bundle boundary is a file instead of a naming prefix
+- Added xanApp/bundles/bundle.schema.json and bundles/README.md: the manifest format, the three layers absence fails in, and the measured routing gap (router.php matches ModulePath without asking whether the Apps tag is active)
+- Added \xan\bundle (xan/bundle.php): the declaration side only - manifest reading, validation, tag mapping and the on/off/partial/broken verdict - with no database and no constants, so a manifest validates on a bare checkout
+- Added xanApp/tools/ops/bundle.php: status, validate, plan, enable, disable and export-schema, read-only unless --apply; enable applies the bundle's schema, restores its SettingsModules rows from the manifest and clears the module and nav caches, and disable reverses it
+- Added bundles/alm/schema.sql: generated CREATE TABLE IF NOT EXISTS for the 13 ALM tables, so the bundle can be created on an install that has never had it
+- Added status --ci to tools/ops/bundle.php and a bundle gate to doTests.sh: an install whose bundle state contradicts its own manifests - switched on but not installed, rows with no tables, a missing required table, or an integration guard refactored away - fails the run
+- Updated xan-init.php: APP_ACTIVE is now built from APP_BUNDLES in the site's .env plus the app tags the manifests declare, so which bundles an install carries is data; unset, it produces the previous [APP_ALL, APP_XAN]
+- Updated SettingsModules.Apps, which turns out to be the only per-module column Schema Update preserves (modulesUpdate rewrites the rest every run), so a bundle's tag is the durable record of what an install carries
+- NOTE the ALM bundle has 13 modules, not the 11 first written up: ALM_ProductsTypesJoin and ALM_TerritoriesJoin were missing from the count, and a manifest that under-counts would leave two tables behind
+- NOTE disabling a bundle by removing its SettingsModules rows is not durable on its own: the next Schema Update re-inserts a row for every table it can see, under the Apps default |XAN|, so disable keeps the tables only until something closes that gap - see "The gap" in xanApp/bundles/README.md
+- Added tests/Unit/xan/BundleTest.php (20 tests, 129 assertions) covering the ALM manifest against the database snapshot, tag mapping, the four install states, the validation cases and the SQL splitter
+- Added tests/e2e/bundle-alm-off.spec.js: no ALM nav entry, no user-menu entry and no ALM card on Home while the bundle is off, with the routing assertion left as a fixme against the known gap
+- PHPUnit (local, BundleTest only): 20 tests, 129 assertions, all passed
 
 2026-10-09 18:23 UTC
 
@@ -73,7 +308,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Updated SettingsSchema upsert and reset to carry the new VirtualYN and TriggeredYN columns
 - Added xanTemplate pass 1c for bare-name tags: {{APP_*}} constants resolve, TrackingID aliases BlastsRecipients::TrackID, anything else fails loud
 - Added xanTemplate block on {{Settings::Field}} tags, redirecting to the APP_* constant form instead of returning a same-named merge column
-- Added xanTemplate unresolved(), rendering [[?tag]] and logging the reason once per tag
+- Added xanTemplate unresolved(), rendering \[\[?tag]] and logging the reason once per tag
 - Added xanTemplate rowsMassageOnRead so child and related template rows are massaged through their module
 - Added xanApp/content.php, the public tracked content endpoint /content/{TrackID}/{file} that serves a real image, logs a Loaded line on the recipient, refuses traversal and sends no-store headers
 - Added PATH_ROOT_CONTENT and the xanApp/content folder with a README for letter artwork
@@ -175,21 +410,6 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Removed temp files: get_blasts_cols.php, cleanup-test-contacts.sql, 3 temp migrations
 - PHPUnit: 407 tests, 661 assertions, all passed
 
-2026-08-16 18:55 UTC
-
-- Added ErrorYN column to BlastsMessagesRecipients with ARRAY_YESNO choices
-- Added SettingsSchema row for BlastsMessagesRecipients.ErrorYN
-- Auto-set ErrorYN=Yes in BlastsMessagesRecipientsMT::recMassage when ErrorMessage is not empty
-- Recolored ErrorYN in recColFormattingTags (red=Yes/error, green=No)
-- Reorganized BlastsMessagesRecipientsMT detail page into 5 cards: Connections, Status, Message Info, Body HTML, Body Plain
-- Merged Delivery + Error + Tracking into single Status card with dividers
-- Split BodyHTML and BodyPlain into separate cards (CARD_WIDTH_0200 each)
-- Updated BlastsRecipientsMT content-page to remove tabs and show Recipient Messages portal directly
-- Rewrote BlastsMessagesRecipientsMT cardPortal as multiline with CARD_WIDTH_0300
-- Portal now joins Blasts and BlastsMessages for BlastName and BMSubject columns
-- Portal sort: ErrorYN DESC, SentTS DESC (errors float to top)
-- Portal columns: GTRR, Recipient, Blast, Message, Status, Error, Error Message, Sent
-
 2026-08-16 18:25 UTC
 
 - Added ARRAY_BLASTS_TYPE constant to constants-arrays.php with option 'Email'
@@ -251,6 +471,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - E2E (Playwright): 35 passed, 2 skipped, 0 failed
 
 2026-08-09 19:33 UTC
+
 - Fixed BlastsMessagesMT cardRecordStatus broken $buttonHTML variable reference
 - Replaced non-existent BlastsMessages columns (SentTS/DeliveredTS/OpenedTS/ClickedTS) with actual columns (SendAfterTS/SendBeginTS/SendEndTS)
 - Rewrote BlastsMessagesMT doGenerateRecipients to store EmailTo/NameFirst/NameLast on BlastsMessagesRecipients per recipient
@@ -271,6 +492,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - E2E (Playwright): 34 passed, 3 failed (Blasts portal assertion, email send timeout, Add Contact modal visibility)
 
 2026-08-04 16:59 UTC
+
 - BlastsMessagesMT Message card converted to eleFlex layout with growing textareas (BodyHTML/BodyPlain stretch to fill card height)
 - BlastsMessagesMT Message card moved to first tab in tab card with isTabCard support (100% width/height, no resize margins)
 - BlastsRecipientsMT merged Status, Recipient, and Stats into single Status card with divider separators; removed System card
@@ -287,6 +509,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - PHPUnit: 448 passed, 872 assertions, 0 failures, 0 errors
 
 2026-08-02 20:09 UTC
+
 - Reordered BlastsMessagesMT detail cards: Status (with blast picker), Message (width 0200), Stats; removed System/Content/Delivery cards
 - Fixed BlastsMessagesRecipientsMT portal with JOIN to BlastsRecipients using COLLATE utf8mb4_unicode_ci, showing Recipient, Subject, Status, Sent columns
 - Made +New and Actions buttons visible in BlastsMessagesRecipientsMT tab cards by removing `!$isTabCard` guards
@@ -314,6 +537,7 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Updated tests/.gitignore to exclude vendor/, composer.json, composer.lock
 
 2026-07-29 16:12 UTC
+
 - Fixed generator wildcard (*) and comma-delimited list parsing in do-check-schema-sse.php
 - Removed recursive table auto-discovery from do-generator.php; only explicitly entered modules are now generated
 - Preserved RelatedTablesA discovery for portal card generation in generated content-page.php
@@ -351,6 +575,20 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Updated root and xanApp/tests/.gitignore to ignore generated test artifacts at the correct paths
 - PHPUnit: 448 passed
 - E2E: 37 passed
+
+2026-07-27 21:00:00
+
+- Fixed modulesUpdate() and schemaUpdateColumns() in xanApp/xan/xan.php to only process BASE TABLE, excluding views from SettingsModules/SettingsSchema
+- Filtered UUID column discovery in modulesUpdate() to only scan base tables for related table mapping
+- Preserved existing NamePlural/NameSingular/FontIcon from SettingsModules when TABLE_COMMENT doesn't explicitly provide new values
+- Updated namePlural/nameSingular in BlastsMT, BlastsAttachmentsMT, BlastsMessagesMT, BlastsRecipientsMT to human-friendly format (e.g., "Blasts Attachments")
+- Removed redundant extrasD['ActiveYN'] assignments from Blasts modules - framework now reads EleChoicesValues/Display from SettingsSchema
+- Fixed portal ActiveYN column width to use ELE_WIDTH_DROPDOWN_YES_NO constant
+- Renamed DataNames columns: MaleYN->MaleI, FemaleYN->FemaleI, FirstNameYN->FirstNameI, LastNameYN->LastNameI
+- Cleared EleChoicesValues/Display from DataNames SettingsSchema rows, updated EleType to TEXT
+- Cleaned up existing _Active/_NotActive views from SettingsModules and SettingsSchema tables
+- Dropped and recreated _Active/_NotActive MySQL views only for tables with ActiveYN (12 tables, 24 views)
+- All tests passing: 448 PHPUnit + 37 E2E = 485 total
 
 2026-07-27 13:00:15
 
@@ -525,7 +763,6 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 2026-06-30-18-25-45
 
 - Created data-singular-plural.txt with 417 singular/plural word pairs for inflector testing
-- Created InflectorDataValidationTest.php with comprehensive test coverage and override support
 - Added ~50 irregular plural rules (chief→chiefs, phenomenon→phenomena, index→indices, vertex→vertices, etc.)
 - Fixed ConstantsXanTest error handler warnings by using setUpBeforeClass
 - Tests: 448 PHPUnit passed, 20 E2E passed
@@ -651,15 +888,9 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Cleaned .playwright-cli cache, removed node_modules from git, moved E2E test to xanApp/tests/
 - Tests: PHPUnit 443 passed/12 skipped, E2E 8 passed/1 flaky (response time)
 
-2026-06-10-18-29-00
+2026-06-10-18-35-00
 
-- Generate Blasts module suite (BlastsMT, BlastsAttachmentsMT, BlastsContentMT, BlastsRecipientsMT, BlastsPDFMT)
-- Fix module generator namespace: class.php → namespace xan; router/do → global namespace
-- Major refactor of do-generator.php with error suppression, strPatternCount, tableName parsing
-- Add generator-trigger.php for module generation endpoint
-- Fix ContactsMT class.php template (restore namespace xan; after incorrect removal)
-- Update .gitignore for Playwright CLI cache (.playwright-cli/)
-- Minor fixes: index.php, xan-init.php, contentCard-generator.php, doModuleGen.txt
+- Deleted Blasts module suite (BlastsMT, BlastsAttachmentsMT, BlastsContentMT, BlastsRecipientsMT, BlastsPDFMT)
 
 2026-06-02-12-20-00
 
@@ -681,7 +912,9 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Parse COLUMN_COMMENT JSON for schema metadata (LabelEN, GroupName, GroupCardOrder, GroupColOrder)
 - Updated SettingsModules INSERT/UPDATE to include NamePlural, NameSingular, FontIcon columns
 - Updated SettingsSchema INSERT/UPDATE to include GroupName, GroupCardOrder, GroupColOrder columns
+
 2026-05-30-15-53-20
+
 - Deleted Plans and PlansItems Modules.
 - Renamed Plans and PlansItems Tables to Foo and FooItems for a Module Generating comparison.
 
@@ -834,7 +1067,6 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Allows jsAlert(), jsConsoleLog(), etc. to work on regular web pages via xanDoJS()
 - Eliminates need for manual scriptsOnLoadA[] in content pages for alerts
 - All 447 PHPUnit tests passing, 4 E2E tests passing
--
 
 2026-05-19-13-06-43
 
@@ -1015,7 +1247,9 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Fixed requestReject() to allow settings-api endpoint (backup email notifications)
 - Fixed csrf.php to add settings-api to exempt routes
 - Fixed functions.sh POSIX compatibility: replaced bash process substitution with temp file
+
 2026-05-13-16-35-00
+
 - Added error logging to router.php module loading paths
 - Enhanced debugging for unregistered modules and missing router files
 - No behavior change; existing 404 handling preserved
@@ -1278,12 +1512,12 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 2026-05-09-14-44-37
 
-- Fixed HIGH-002: File Operations Without Caching on Every Request
+- Fixed File Operations Without Caching on Every Request
 - Added RouterFileExists to modulesD in xan.php modulesLoad() to pre-check router file existence once during module loading
 - Updated router.php to use \xan\xan::$modulesD[ $component1Base ][ 'RouterFileExists' ] for zero disk hits on every request
 - Removed unused fileExistsCacheD property and fileExistsCached method from xan.php
 - All 76 tests passing (74 PHPUnit + 2 E2E)
-
+  
 2026-05-09-14-18-12
 
 - Fixed JS minification escaping: Added str_replace() in init.php to escape double quotes in PHP constant values before minification, preventing syntax errors in minified xan.js.
@@ -1318,6 +1552,13 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Updated doGit.sh to manage timestamped commit message files with 3-file retention policy.
 - Created timestamped commit message files: doGitCommitMessage-2026-05-05-14-42-30.txt and doGitCommitMessage-2026-05-05-15-21-00.txt.
 - Renamed doTestsLog files with new timestamps for test run history tracking.
+
+2026-05-05-15-08-00
+
+- Fixed MEDIUM-001: Added JsonDecodeSafeAuditTest.php to continuously audit json_decode usage and ensure new files use jsonDecodeSafe().
+- Updated doTests.sh to keep 3 most recent doTestsLog files instead of 1.
+- Updated doGit.sh to keep 3 most recent commit messages in doGitCommitMessage.txt after commits.
+- Fixed MEDIUM-001: Applied jsonDecodeSafe() to 47 module controllers: xanApp/app/APIRequestsMT/do.php, xanApp/app/SettingsMT/do.php, xanApp/app/ALM_ArtMT/do.php, xanApp/app/ALM_LicensesMT/do.php, xanApp/app/AddressesMT/do.php, xanApp/app/ALM_ContractsMT/do.php, xanApp/app/PlansMT/do.php, xanApp/app/TicketsMT/do.php, xanApp/app/CalendarTagsMT/do.php, xanApp/app/ALM_CollectionsMT/do.php, xanApp/app/ALM_ArtTagsJoinMT/do.php, xanApp/app/ALM_ArtTagsMT/do.php, xanApp/app/ALM_ArtistsMT/do.php, xanApp/app/ALM_LicenseesMT/do.php, xanApp/app/ALM_ProductsTypesMT/do.php, xanApp/app/ALM_RoyaltiesMT/do.php, xanApp/app/ALM_TerritoriesMT/do.php, xanApp/app/AccessPermissionsMT/do.php, xanApp/app/AccessRolesMT/do.php, xanApp/app/AccessRolesPermissionsMT/do.php, xanApp/app/AccessUsersRolesMT/do.php, xanApp/app/CalendarEventsMT/do.php, xanApp/app/CalendarM/do.php, xanApp/app/CommsMT/do.php, xanApp/app/ContactsMT/do.php, xanApp/app/ContactsTagsJoinMT/do.php, xanApp/app/ContactsTagsMT/do.php, xanApp/app/DisbursementsMT/do.php, xanApp/app/DocumentsMT/do.php, xanApp/app/HomeM/do.php, xanApp/app/LinksMT/do.php, xanApp/app/PaymentsMT/do.php, xanApp/app/PlansItemsMT/do.php, xanApp/app/ProductsMT/do.php, xanApp/app/ProductsPricesMT/do.php, xanApp/app/ProjectsItemsMT/do.php, xanApp/app/ProjectsMT/do.php, xanApp/app/ProjectsTasksMT/do.php, xanApp/app/PurchasesItemsMT/do.php, xanApp/app/PurchasesMT/do.php, xanApp/app/SalesItemsMT/do.php, xanApp/app/SalesMT/do.php, xanApp/app/SettingsCompaniesMT/do.php, xanApp/app/StatsM/do.php, xanApp/app/TicketsMessagesMT/do.php, xanApp/app/TicketsMT/do.php, xanApp/app/VendorsMT/do.php, xanApp/app/Xan_LabsM/do.php.
 
 2026-05-05-14-35-00
 
@@ -1387,6 +1628,14 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 - Disabled Stats wkHTMLtoPDF current version number as we now use mPDF.
 - Added two Xan gifs.
 
+2026-03-07-15-55-10
+
+- Updated doGit.sh.
+
+2026-03-07-15-31-46
+
+- Renamed doDevGit.sh to doGit.sh.
+
 2026-03-07-15-17-35
 
 - Updated GitHub commit shell script doDevGit.sh.
@@ -1397,10 +1646,10 @@ Read more about Xanadu: <https://campsoftware.com/products/xanadu.php>
 
 2026-03-05-14-18-03
 
-- Added functionality for PDF form handling, including retrieving and setting PDF form fields in `pdfMan.php`.  
-- Integrated new PDF form field feature into the Xan Labs module with a UI button and sample implementation.  
-- Refactored and renamed PDF-related methods for clarity: `pagesTextFind` → `getTextFindPageNums`, `pagesTextExtract` → `getPageText`, and `cardRecordApplication` → `cardRecordForm`.  
-- Minor cleanup in `ContactsMT` and `HomeM` modules for better maintainability.  
+- Added functionality for PDF form handling, including retrieving and setting PDF form fields in `pdfMan.php`.
+- Integrated new PDF form field feature into the Xan Labs module with a UI button and sample implementation.
+- Refactored and renamed PDF-related methods for clarity: `pagesTextFind` → `getTextFindPageNums`, `pagesTextExtract` → `getPageText`, and `cardRecordApplication` → `cardRecordForm`.
+- Minor cleanup in `ContactsMT` and `HomeM` modules for better maintainability.
 - Added test files `pdfTestForm.pdf` and `pdfTestFormSet.pdf` to validate PDF form functionality.
 
 2026-03-04-12-59-18
